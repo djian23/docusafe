@@ -133,31 +133,94 @@
 
 @layer utilities {
   .gradient-primary {
-    @apply bg-gradient-to-r from-primary to-blue-400;
+    background: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(199 89% 48%) 100%);
   }
   
   .gradient-hero {
-    background: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(263 70% 50%) 100%);
+    background: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(263 70% 55%) 50%, hsl(330 81% 60%) 100%);
+  }
+  
+  .gradient-subtle {
+    background: linear-gradient(135deg, hsl(217 91% 60% / 0.08) 0%, hsl(263 70% 50% / 0.08) 100%);
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent gradient-hero;
+    @apply bg-clip-text text-transparent;
+    background: linear-gradient(135deg, hsl(217 91% 55%) 0%, hsl(263 70% 55%) 50%, hsl(330 81% 55%) 100%);
+  }
+  
+  .glass {
+    background: hsl(var(--background) / 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  .glass-card {
+    background: hsl(var(--card) / 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.5);
   }
   
   .shadow-soft {
-    box-shadow: 0 4px 20px -4px hsl(217 91% 60% / 0.15);
+    box-shadow: 0 4px 24px -4px hsl(217 91% 60% / 0.2),
+                0 8px 48px -8px hsl(263 70% 50% / 0.1);
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 0 40px -10px hsl(217 91% 60% / 0.4),
+                0 0 80px -20px hsl(263 70% 50% / 0.3);
   }
   
   .shadow-card {
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    box-shadow: 0 2px 8px -2px hsl(222 47% 11% / 0.08),
+                0 4px 16px -4px hsl(222 47% 11% / 0.06);
+  }
+  
+  .shadow-card-hover {
+    box-shadow: 0 8px 32px -8px hsl(217 91% 60% / 0.15),
+                0 16px 48px -16px hsl(263 70% 50% / 0.1);
   }
   
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
   
+  .animate-pulse-soft {
+    animation: pulse-soft 4s ease-in-out infinite;
+  }
+  
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+  
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(2deg); }
+  }
+  
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+  
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  .border-gradient {
+    border: 1px solid transparent;
+    background: linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
+                linear-gradient(135deg, hsl(217 91% 60% / 0.3), hsl(263 70% 50% / 0.3)) border-box;
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
   }
 }
