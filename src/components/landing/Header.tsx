@@ -10,7 +10,7 @@ export function Header() {
           <div className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-soft group-hover:scale-105 transition-transform">
             <Shield className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="text-gradient font-semibold">DocuSafe</span>
+          <span className="text-gradient font-semibold">VaultSphere</span>
         </Link>
         
         <nav className="hidden md:flex items-center gap-8">

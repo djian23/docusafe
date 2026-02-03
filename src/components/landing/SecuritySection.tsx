@@ -52,7 +52,7 @@ export function SecuritySection() {
             c'est notre <span className="text-primary">fondation</span>
           </h2>
           <p className="text-sidebar-foreground/70 max-w-2xl mx-auto text-lg">
-            Chez DocuSafe, nous avons conçu chaque fonctionnalité avec la sécurité comme priorité absolue.
+            Chez VaultSphere, nous avons conçu chaque fonctionnalité avec la sécurité comme priorité absolue.
           </p>
         </div>
 

@@ -35,8 +35,7 @@ export function Footer() {
               <span className="text-gradient font-semibold">VaultSphere</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Votre coffre-fort numérique intelligent pour organiser, sécuriser et retrouver 
-              tous vos documents importants.
+              Votre coffre-fort numérique intelligent pour organiser, sécuriser et retrouver tous vos documents importants.
             </p>
           </div>
           

@@ -83,7 +83,7 @@ export function HeroSection() {
                 <div className="flex-1 flex justify-center">
                   <div className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-sidebar-accent/50">
                     <Lock className="w-3 h-3 text-success" />
-                    <span className="text-xs text-sidebar-foreground/70 font-medium">docusafe.app</span>
+                    <span className="text-xs text-sidebar-foreground/70 font-medium">vaultsphere.app</span>
                   </div>
                 </div>
               </div>
