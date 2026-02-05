@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Shield, Mail, Lock, ArrowRight, Check } from "lucide-react";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,12 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const passwordRequirements = [
+    { met: password.length >= 8, text: "8+ caractères" },
+    { met: /[A-Z]/.test(password), text: "Une majuscule" },
+    { met: /[0-9]/.test(password), text: "Un chiffre" },
+  ];
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,82 +84,151 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-accent/50 to-background p-4">
-      <div className="w-full max-w-md">
+      {/* Background decorative elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 -right-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 -left-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      </div>
+      
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 font-bold text-2xl mb-2">
-            <span className="text-3xl">🔐</span>
-            <span className="text-gradient">DocuSafe</span>
+          <Link to="/" className="inline-flex items-center gap-3 font-bold text-2xl mb-4 group justify-center">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow">
+              <Shield className="w-6 h-6 text-primary-foreground" />
+            </div>
+            <span className="text-gradient">VaultSphere</span>
           </Link>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-semibold text-foreground mb-2">
+            Créez votre compte
+          </h1>
+          <p className="text-muted-foreground text-sm">
             Créez votre coffre-fort sécurisé
           </p>
         </div>
 
-        <div className="bg-card rounded-xl p-8 shadow-soft border border-border">
-          <form onSubmit={handleSignup} className="space-y-4">
+        <div className="backdrop-blur-xl bg-card/80 rounded-2xl p-8 shadow-2xl border border-white/10 ring-1 ring-black/5">
+          <form onSubmit={handleSignup} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="vous@exemple.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="vous@exemple.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/50 transition-colors"
+                  required
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <p className="text-xs text-muted-foreground">
-                Minimum 8 caractères
-              </p>
+              <Label htmlFor="password" className="text-sm font-medium">Mot de passe</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/50 transition-colors"
+                  required
+                />
+              </div>
+              {password && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {passwordRequirements.map((req, i) => (
+                    <span
+                      key={i}
+                      className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full transition-colors ${
+                        req.met 
+                          ? "bg-green-500/10 text-green-600 dark:text-green-400" 
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {req.met && <Check className="w-3 h-3" />}
+                      {req.text}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
+              <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirmer le mot de passe</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={`pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/50 transition-colors ${
+                    confirmPassword && password !== confirmPassword 
+                      ? "border-red-500/50 focus:border-red-500" 
+                      : confirmPassword && password === confirmPassword 
+                        ? "border-green-500/50 focus:border-green-500" 
+                        : ""
+                  }`}
+                  required
+                />
+                {confirmPassword && password === confirmPassword && (
+                  <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-500" />
+                )}
+              </div>
+              {confirmPassword && password !== confirmPassword && (
+                <p className="text-xs text-red-500">Les mots de passe ne correspondent pas</p>
+              )}
             </div>
 
-            <div className="flex items-start space-x-2">
+            <div className="flex items-start space-x-3 pt-2">
               <Checkbox 
                 id="terms" 
                 checked={acceptTerms}
                 onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
+                className="mt-0.5"
               />
-              <Label htmlFor="terms" className="text-sm leading-tight">
+              <Label htmlFor="terms" className="text-sm leading-relaxed text-muted-foreground cursor-pointer">
                 J'accepte les{" "}
-                <a href="#" className="text-primary hover:underline">conditions d'utilisation</a>
+                <a href="#" className="text-primary hover:underline font-medium">conditions d'utilisation</a>
                 {" "}et la{" "}
-                <a href="#" className="text-primary hover:underline">politique de confidentialité</a>
+                <a href="#" className="text-primary hover:underline font-medium">politique de confidentialité</a>
               </Label>
             </div>
 
             <Button 
               type="submit" 
-              className="w-full gradient-hero text-primary-foreground"
+              className="w-full h-11 gradient-hero text-primary-foreground font-medium shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all group"
               disabled={loading}
             >
-              {loading ? "Création..." : "Créer mon coffre-fort"}
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  Création en cours...
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  Créer mon coffre-fort
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              )}
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border/50" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">ou</span>
+            </div>
+          </div>
+
+          <div className="text-center text-sm text-muted-foreground">
             Déjà un compte ?{" "}
             <Link to="/login" className="text-primary hover:underline font-medium">
               Se connecter
@@ -160,9 +236,12 @@ export default function Signup() {
           </div>
         </div>
 
-        <div className="text-center text-xs text-muted-foreground mt-6 space-y-1">
-          <p>🔒 Vos données sont chiffrées et sécurisées</p>
-          <p>🇪🇺 Hébergé en Europe • RGPD compliant</p>
+        <div className="flex flex-col items-center gap-2 text-xs text-muted-foreground mt-6">
+          <div className="flex items-center gap-2">
+            <Shield className="w-3.5 h-3.5" />
+            <span>Vos données sont chiffrées et sécurisées</span>
+          </div>
+          <span>🇪🇺 Hébergé en Europe • RGPD compliant</span>
         </div>
       </div>
     </div>
