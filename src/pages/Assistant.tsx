@@ -183,7 +183,7 @@ export default function Assistant() {
                   ? 'bg-primary text-primary-foreground rounded-br-md'
                   : 'glass-card text-foreground rounded-bl-md'
               }`}>
-                {msg.content}
+                {msg.content.replace(/\*+/g, '')}
               </div>
               {msg.role === 'user' && (
                 <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">

@@ -15,8 +15,17 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import {
-  Search, Plus, Eye, EyeOff, Copy, Trash2, Edit, Globe, Lock, Shield,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Search, Plus, Eye, EyeOff, Copy, Trash2, Edit, Globe, Lock, Shield, Wand2, RefreshCw,
 } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Password {
   id: string;
@@ -31,6 +40,17 @@ interface Password {
   created_at: string | null;
   last_changed_at: string | null;
 }
+
+const DEFAULT_CATEGORIES = [
+  'Personnel',
+  'Professionnel',
+  'Bancaire',
+  'Réseaux sociaux',
+  'Shopping',
+  'Streaming',
+  'Email',
+  'Jeux',
+];
 
 // Simple AES encryption helpers using Web Crypto API
 async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey> {
@@ -80,8 +100,18 @@ function getStrengthScore(pw: string): number {
   return score;
 }
 
+function generatePassword(length: number, useUppercase: boolean, useNumbers: boolean, useSymbols: boolean): string {
+  let chars = 'abcdefghijklmnopqrstuvwxyz';
+  if (useUppercase) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (useNumbers) chars += '0123456789';
+  if (useSymbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  const arr = new Uint32Array(length);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, (v) => chars[v % chars.length]).join('');
+}
+
 const strengthLabels = ['Très faible', 'Faible', 'Moyen', 'Fort', 'Très fort'];
-const strengthColors = ['bg-destructive', 'bg-destructive', 'bg-warning', 'bg-success', 'bg-success'];
+const strengthColors = ['bg-destructive', 'bg-destructive', 'bg-[hsl(45,93%,47%)]', 'bg-[hsl(142,76%,36%)]', 'bg-[hsl(142,76%,36%)]'];
 
 export default function Passwords() {
   const { user } = useAuth();
@@ -92,6 +122,7 @@ export default function Passwords() {
   const [showPassword, setShowPassword] = useState<Record<string, boolean>>({});
   const [decryptedPasswords, setDecryptedPasswords] = useState<Record<string, string>>({});
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [generatorOpen, setGeneratorOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Form state
@@ -100,6 +131,23 @@ export default function Passwords() {
   const [password, setPassword] = useState('');
   const [serviceUrl, setServiceUrl] = useState('');
   const [category, setCategory] = useState('');
+  const [customCategory, setCustomCategory] = useState('');
+  const [showCustomCategory, setShowCustomCategory] = useState(false);
+
+  // Generator state
+  const [genLength, setGenLength] = useState(16);
+  const [genUppercase, setGenUppercase] = useState(true);
+  const [genNumbers, setGenNumbers] = useState(true);
+  const [genSymbols, setGenSymbols] = useState(true);
+  const [generatedPw, setGeneratedPw] = useState('');
+
+  // Generator for saving directly
+  const [genServiceName, setGenServiceName] = useState('');
+  const [genUsername, setGenUsername] = useState('');
+  const [genCategory, setGenCategory] = useState('');
+  const [genCustomCategory, setGenCustomCategory] = useState('');
+  const [genShowCustomCategory, setGenShowCustomCategory] = useState(false);
+  const [genServiceUrl, setGenServiceUrl] = useState('');
 
   const storageUsed = profile?.storage_used_bytes || 0;
   const storageLimit = profile?.storage_limit_bytes || 500 * 1024 * 1024;
@@ -112,12 +160,20 @@ export default function Passwords() {
         .from('passwords')
         .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .order('category', { ascending: true })
+        .order('service_name', { ascending: true });
       if (error) throw error;
       return data;
     },
     enabled: !!user,
   });
+
+  // Get all unique categories (from DB + defaults)
+  const allCategories = useMemo(() => {
+    const dbCats = passwords?.map(p => p.category).filter(Boolean) as string[] || [];
+    const merged = new Set([...DEFAULT_CATEGORIES, ...dbCats]);
+    return Array.from(merged).sort();
+  }, [passwords]);
 
   const filteredPasswords = useMemo(() => {
     if (!passwords) return [];
@@ -130,20 +186,41 @@ export default function Passwords() {
     );
   }, [passwords, searchQuery]);
 
+  // Group by category
+  const groupedPasswords = useMemo(() => {
+    const groups: Record<string, Password[]> = {};
+    for (const pw of filteredPasswords) {
+      const cat = pw.category || 'Sans catégorie';
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(pw);
+    }
+    return groups;
+  }, [filteredPasswords]);
+
   const saveMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (overrides?: { pw?: string; svc?: string; usr?: string; cat?: string; url?: string }) => {
       if (!user) throw new Error('Not authenticated');
-      const { encrypted, iv } = await encryptPassword(password, user.email || user.id);
-      const score = getStrengthScore(password);
+      const thePw = overrides?.pw || password;
+      const theSvc = overrides?.svc || serviceName;
+      const theUsr = overrides?.usr || username;
+      const theCat = overrides?.cat || (showCustomCategory ? customCategory : category);
+      const theUrl = overrides?.url || serviceUrl;
+
+      if (!theSvc.trim() || !theUsr.trim() || !thePw.trim()) {
+        throw new Error('Champs obligatoires manquants');
+      }
+
+      const { encrypted, iv } = await encryptPassword(thePw, user.email || user.id);
+      const score = getStrengthScore(thePw);
 
       if (editingId) {
         const { error } = await supabase.from('passwords').update({
-          service_name: serviceName,
-          username: username || null,
+          service_name: theSvc,
+          username: theUsr || null,
           encrypted_password: encrypted,
           encryption_iv: iv,
-          service_url: serviceUrl || null,
-          category: category || null,
+          service_url: theUrl || null,
+          category: theCat || null,
           password_strength_score: score,
           last_changed_at: new Date().toISOString(),
         }).eq('id', editingId);
@@ -151,12 +228,12 @@ export default function Passwords() {
       } else {
         const { error } = await supabase.from('passwords').insert({
           user_id: user.id,
-          service_name: serviceName,
-          username: username || null,
+          service_name: theSvc,
+          username: theUsr || null,
           encrypted_password: encrypted,
           encryption_iv: iv,
-          service_url: serviceUrl || null,
-          category: category || null,
+          service_url: theUrl || null,
+          category: theCat || null,
           password_strength_score: score,
         });
         if (error) throw error;
@@ -165,11 +242,13 @@ export default function Passwords() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['passwords'] });
       setDialogOpen(false);
+      setGeneratorOpen(false);
       resetForm();
-      toast({ title: editingId ? 'Mot de passe mis à jour' : 'Mot de passe ajouté' });
+      resetGenForm();
+      toast({ title: editingId ? 'Mot de passe mis à jour' : 'Mot de passe ajouté ✅' });
     },
-    onError: () => {
-      toast({ title: 'Erreur', description: 'Impossible de sauvegarder.', variant: 'destructive' });
+    onError: (err) => {
+      toast({ title: 'Erreur', description: err instanceof Error ? err.message : 'Impossible de sauvegarder.', variant: 'destructive' });
     },
   });
 
@@ -190,7 +269,19 @@ export default function Passwords() {
     setPassword('');
     setServiceUrl('');
     setCategory('');
+    setCustomCategory('');
+    setShowCustomCategory(false);
     setEditingId(null);
+  };
+
+  const resetGenForm = () => {
+    setGenServiceName('');
+    setGenUsername('');
+    setGenCategory('');
+    setGenCustomCategory('');
+    setGenShowCustomCategory(false);
+    setGenServiceUrl('');
+    setGeneratedPw('');
   };
 
   const handleToggleShow = async (pw: Password) => {
@@ -220,11 +311,58 @@ export default function Passwords() {
     setServiceName(pw.service_name);
     setUsername(pw.username || '');
     setServiceUrl(pw.service_url || '');
-    setCategory(pw.category || '');
+    if (pw.category && DEFAULT_CATEGORIES.includes(pw.category)) {
+      setCategory(pw.category);
+      setShowCustomCategory(false);
+    } else if (pw.category) {
+      setCategory('__custom__');
+      setCustomCategory(pw.category);
+      setShowCustomCategory(true);
+    }
     const plain = await decryptPassword(pw.encrypted_password, pw.encryption_iv, user?.email || user?.id || '');
     setPassword(plain);
     setDialogOpen(true);
   };
+
+  const handleGenerate = () => {
+    setGeneratedPw(generatePassword(genLength, genUppercase, genNumbers, genSymbols));
+  };
+
+  const handleSaveGenerated = () => {
+    const cat = genShowCustomCategory ? genCustomCategory : genCategory;
+    saveMutation.mutate({ pw: generatedPw, svc: genServiceName, usr: genUsername, cat, url: genServiceUrl });
+  };
+
+  const handleCategoryChange = (value: string, isGen = false) => {
+    if (value === '__custom__') {
+      if (isGen) { setGenCategory(''); setGenShowCustomCategory(true); }
+      else { setCategory(''); setShowCustomCategory(true); }
+    } else {
+      if (isGen) { setGenCategory(value); setGenShowCustomCategory(false); setGenCustomCategory(''); }
+      else { setCategory(value); setShowCustomCategory(false); setCustomCategory(''); }
+    }
+  };
+
+  const CategorySelect = ({ value, onChange, showCustom, customValue, onCustomChange, isGen = false }: {
+    value: string; onChange: (v: string) => void; showCustom: boolean; customValue: string; onCustomChange: (v: string) => void; isGen?: boolean;
+  }) => (
+    <div className="space-y-2">
+      <Select value={showCustom ? '__custom__' : value} onValueChange={onChange}>
+        <SelectTrigger>
+          <SelectValue placeholder="Choisir une catégorie" />
+        </SelectTrigger>
+        <SelectContent>
+          {allCategories.map(cat => (
+            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+          ))}
+          <SelectItem value="__custom__">+ Nouvelle catégorie</SelectItem>
+        </SelectContent>
+      </Select>
+      {showCustom && (
+        <Input value={customValue} onChange={e => onCustomChange(e.target.value)} placeholder="Nom de la catégorie" />
+      )}
+    </div>
+  );
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -241,7 +379,7 @@ export default function Passwords() {
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -251,24 +389,123 @@ export default function Passwords() {
                 className="pl-10 w-64"
               />
             </div>
+
+            {/* Password Generator Dialog */}
+            <Dialog open={generatorOpen} onOpenChange={(o) => { setGeneratorOpen(o); if (!o) resetGenForm(); }}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <Wand2 className="h-4 w-4" /> Générer
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Générateur de mot de passe</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  {/* Generated password display */}
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 bg-muted rounded-lg px-3 py-2 text-sm font-mono break-all min-h-[40px] flex items-center">
+                      {generatedPw || 'Cliquez sur Générer'}
+                    </code>
+                    <Button variant="ghost" size="icon" onClick={() => { if (generatedPw) { navigator.clipboard.writeText(generatedPw); toast({ title: 'Copié !' }); } }}>
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Strength indicator */}
+                  {generatedPw && (
+                    <div>
+                      <div className="flex gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <div key={i} className={`h-1.5 flex-1 rounded-full ${i < getStrengthScore(generatedPw) ? strengthColors[getStrengthScore(generatedPw) - 1] : 'bg-muted'}`} />
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{strengthLabels[getStrengthScore(generatedPw) - 1] || 'Très faible'}</p>
+                    </div>
+                  )}
+
+                  {/* Length slider */}
+                  <div>
+                    <label className="text-sm font-medium text-foreground">Longueur : {genLength}</label>
+                    <Slider value={[genLength]} onValueChange={([v]) => setGenLength(v)} min={8} max={32} step={1} className="mt-2" />
+                  </div>
+
+                  {/* Options */}
+                  <div className="flex flex-wrap gap-4">
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox checked={genUppercase} onCheckedChange={(c) => setGenUppercase(!!c)} /> Majuscules
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox checked={genNumbers} onCheckedChange={(c) => setGenNumbers(!!c)} /> Chiffres
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox checked={genSymbols} onCheckedChange={(c) => setGenSymbols(!!c)} /> Symboles
+                    </label>
+                  </div>
+
+                  <Button onClick={handleGenerate} className="w-full gap-2" variant="outline">
+                    <RefreshCw className="h-4 w-4" /> Générer
+                  </Button>
+
+                  {/* Save section */}
+                  {generatedPw && (
+                    <div className="border-t border-border pt-4 space-y-3">
+                      <p className="text-sm font-medium text-foreground">Enregistrer ce mot de passe</p>
+                      <div>
+                        <label className="text-sm font-medium text-foreground">Service *</label>
+                        <Input value={genServiceName} onChange={e => setGenServiceName(e.target.value)} placeholder="Ex: Google, Netflix..." />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-foreground">Identifiant *</label>
+                        <Input value={genUsername} onChange={e => setGenUsername(e.target.value)} placeholder="Email ou nom d'utilisateur" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-foreground">Catégorie</label>
+                        <CategorySelect
+                          value={genCategory}
+                          onChange={(v) => handleCategoryChange(v, true)}
+                          showCustom={genShowCustomCategory}
+                          customValue={genCustomCategory}
+                          onCustomChange={setGenCustomCategory}
+                          isGen
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-foreground">URL du site</label>
+                        <Input value={genServiceUrl} onChange={e => setGenServiceUrl(e.target.value)} placeholder="https://..." />
+                      </div>
+                      <Button
+                        onClick={handleSaveGenerated}
+                        className="w-full gradient-hero text-primary-foreground"
+                        disabled={!genServiceName.trim() || !genUsername.trim() || saveMutation.isPending}
+                      >
+                        {saveMutation.isPending ? 'Enregistrement...' : 'Enregistrer le mot de passe'}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {/* Add password dialog */}
             <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
               <DialogTrigger asChild>
-                <Button className="gradient-hero text-primary-foreground">
-                  <Plus className="h-4 w-4 mr-2" /> Ajouter
+                <Button className="gradient-hero text-primary-foreground gap-2">
+                  <Plus className="h-4 w-4" /> Ajouter
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>{editingId ? 'Modifier' : 'Nouveau mot de passe'}</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(); }} className="space-y-4">
+                <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate({}); }} className="space-y-4">
                   <div>
                     <label className="text-sm font-medium text-foreground">Service *</label>
                     <Input value={serviceName} onChange={e => setServiceName(e.target.value)} placeholder="Ex: Google, Netflix..." required />
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-foreground">Identifiant</label>
-                    <Input value={username} onChange={e => setUsername(e.target.value)} placeholder="Email ou nom d'utilisateur" />
+                    <label className="text-sm font-medium text-foreground">Identifiant *</label>
+                    <Input value={username} onChange={e => setUsername(e.target.value)} placeholder="Email ou nom d'utilisateur" required />
                   </div>
                   <div>
                     <label className="text-sm font-medium text-foreground">Mot de passe *</label>
@@ -290,7 +527,13 @@ export default function Passwords() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-foreground">Catégorie</label>
-                    <Input value={category} onChange={e => setCategory(e.target.value)} placeholder="Réseaux sociaux, Banque..." />
+                    <CategorySelect
+                      value={category}
+                      onChange={(v) => handleCategoryChange(v)}
+                      showCustom={showCustomCategory}
+                      customValue={customCategory}
+                      onCustomChange={setCustomCategory}
+                    />
                   </div>
                   <Button type="submit" className="w-full gradient-hero text-primary-foreground" disabled={saveMutation.isPending}>
                     {saveMutation.isPending ? 'Enregistrement...' : (editingId ? 'Mettre à jour' : 'Ajouter')}
@@ -305,40 +548,50 @@ export default function Passwords() {
           <div className="space-y-3">
             {[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-muted animate-pulse rounded-xl" />)}
           </div>
-        ) : filteredPasswords.length > 0 ? (
-          <div className="space-y-3">
-            {filteredPasswords.map(pw => (
-              <div key={pw.id} className="glass-card rounded-xl p-4 flex items-center gap-4 hover:shadow-card-hover transition-all">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  {pw.service_icon ? <img src={pw.service_icon} alt="" className="w-6 h-6" /> : <Globe className="w-5 h-5 text-primary" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-foreground">{pw.service_name}</p>
-                  <p className="text-sm text-muted-foreground truncate">{pw.username || '—'}</p>
-                </div>
-                <div className="flex items-center gap-1">
-                  {pw.password_strength_score != null && (
-                    <div className="flex gap-0.5 mr-3">
-                      {[...Array(5)].map((_, i) => (
-                        <div key={i} className={`w-1.5 h-4 rounded-full ${i < pw.password_strength_score! ? strengthColors[pw.password_strength_score! - 1] : 'bg-muted'}`} />
-                      ))}
+        ) : Object.keys(groupedPasswords).length > 0 ? (
+          <div className="space-y-6">
+            {Object.entries(groupedPasswords).map(([cat, pws]) => (
+              <div key={cat}>
+                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  {cat} ({pws.length})
+                </h2>
+                <div className="space-y-2">
+                  {pws.map(pw => (
+                    <div key={pw.id} className="glass-card rounded-xl p-4 flex items-center gap-4 hover:shadow-card-hover transition-all">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        {pw.service_icon ? <img src={pw.service_icon} alt="" className="w-6 h-6" /> : <Globe className="w-5 h-5 text-primary" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground">{pw.service_name}</p>
+                        <p className="text-sm text-muted-foreground truncate">{pw.username || '—'}</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {pw.password_strength_score != null && (
+                          <div className="flex gap-0.5 mr-3">
+                            {[...Array(5)].map((_, i) => (
+                              <div key={i} className={`w-1.5 h-4 rounded-full ${i < pw.password_strength_score! ? strengthColors[pw.password_strength_score! - 1] : 'bg-muted'}`} />
+                            ))}
+                          </div>
+                        )}
+                        <code className="text-sm font-mono text-muted-foreground min-w-[100px] text-right">
+                          {showPassword[pw.id] ? decryptedPasswords[pw.id] : '••••••••'}
+                        </code>
+                        <Button variant="ghost" size="icon" onClick={() => handleToggleShow(pw)}>
+                          {showPassword[pw.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleCopy(pw)}>
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleEdit(pw)}>
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(pw.id)} className="text-destructive hover:text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                  )}
-                  <code className="text-sm font-mono text-muted-foreground min-w-[100px] text-right">
-                    {showPassword[pw.id] ? decryptedPasswords[pw.id] : '••••••••'}
-                  </code>
-                  <Button variant="ghost" size="icon" onClick={() => handleToggleShow(pw)}>
-                    {showPassword[pw.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleCopy(pw)}>
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleEdit(pw)}>
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(pw.id)} className="text-destructive hover:text-destructive">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  ))}
                 </div>
               </div>
             ))}
