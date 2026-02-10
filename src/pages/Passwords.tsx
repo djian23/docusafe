@@ -1,0 +1,356 @@
+import { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
+import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  Search, Plus, Eye, EyeOff, Copy, Trash2, Edit, Globe, Lock, Shield,
+} from 'lucide-react';
+
+interface Password {
+  id: string;
+  service_name: string;
+  username: string | null;
+  encrypted_password: string;
+  encryption_iv: string;
+  service_url: string | null;
+  service_icon: string | null;
+  category: string | null;
+  password_strength_score: number | null;
+  created_at: string | null;
+  last_changed_at: string | null;
+}
+
+// Simple AES encryption helpers using Web Crypto API
+async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey> {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+async function encryptPassword(plaintext: string, userEmail: string): Promise<{ encrypted: string; iv: string }> {
+  const salt = new TextEncoder().encode(userEmail + '-vaultsphere').buffer as ArrayBuffer;
+  const key = await deriveKey(userEmail, salt);
+  const ivArr = crypto.getRandomValues(new Uint8Array(12));
+  const encoded = new TextEncoder().encode(plaintext);
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: ivArr.buffer as ArrayBuffer }, key, encoded);
+  return {
+    encrypted: btoa(String.fromCharCode(...new Uint8Array(ciphertext))),
+    iv: btoa(String.fromCharCode(...ivArr)),
+  };
+}
+
+async function decryptPassword(encrypted: string, iv: string, userEmail: string): Promise<string> {
+  try {
+    const salt = new TextEncoder().encode(userEmail + '-vaultsphere').buffer as ArrayBuffer;
+    const key = await deriveKey(userEmail, salt);
+    const ivBytes = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
+    const cipherBytes = Uint8Array.from(atob(encrypted), c => c.charCodeAt(0));
+    const plainBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: ivBytes.buffer as ArrayBuffer }, key, cipherBytes);
+    return new TextDecoder().decode(plainBuffer);
+  } catch {
+    return '••••••••';
+  }
+}
+
+function getStrengthScore(pw: string): number {
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (pw.length >= 12) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  return score;
+}
+
+const strengthLabels = ['Très faible', 'Faible', 'Moyen', 'Fort', 'Très fort'];
+const strengthColors = ['bg-destructive', 'bg-destructive', 'bg-warning', 'bg-success', 'bg-success'];
+
+export default function Passwords() {
+  const { user } = useAuth();
+  const { data: profile } = useProfile();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showPassword, setShowPassword] = useState<Record<string, boolean>>({});
+  const [decryptedPasswords, setDecryptedPasswords] = useState<Record<string, string>>({});
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  // Form state
+  const [serviceName, setServiceName] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [serviceUrl, setServiceUrl] = useState('');
+  const [category, setCategory] = useState('');
+
+  const storageUsed = profile?.storage_used_bytes || 0;
+  const storageLimit = profile?.storage_limit_bytes || 500 * 1024 * 1024;
+
+  const { data: passwords, isLoading } = useQuery({
+    queryKey: ['passwords', user?.id],
+    queryFn: async (): Promise<Password[]> => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('passwords')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const filteredPasswords = useMemo(() => {
+    if (!passwords) return [];
+    if (!searchQuery) return passwords;
+    const q = searchQuery.toLowerCase();
+    return passwords.filter(p =>
+      p.service_name.toLowerCase().includes(q) ||
+      p.username?.toLowerCase().includes(q) ||
+      p.category?.toLowerCase().includes(q)
+    );
+  }, [passwords, searchQuery]);
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error('Not authenticated');
+      const { encrypted, iv } = await encryptPassword(password, user.email || user.id);
+      const score = getStrengthScore(password);
+
+      if (editingId) {
+        const { error } = await supabase.from('passwords').update({
+          service_name: serviceName,
+          username: username || null,
+          encrypted_password: encrypted,
+          encryption_iv: iv,
+          service_url: serviceUrl || null,
+          category: category || null,
+          password_strength_score: score,
+          last_changed_at: new Date().toISOString(),
+        }).eq('id', editingId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('passwords').insert({
+          user_id: user.id,
+          service_name: serviceName,
+          username: username || null,
+          encrypted_password: encrypted,
+          encryption_iv: iv,
+          service_url: serviceUrl || null,
+          category: category || null,
+          password_strength_score: score,
+        });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['passwords'] });
+      setDialogOpen(false);
+      resetForm();
+      toast({ title: editingId ? 'Mot de passe mis à jour' : 'Mot de passe ajouté' });
+    },
+    onError: () => {
+      toast({ title: 'Erreur', description: 'Impossible de sauvegarder.', variant: 'destructive' });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('passwords').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['passwords'] });
+      toast({ title: 'Mot de passe supprimé' });
+    },
+  });
+
+  const resetForm = () => {
+    setServiceName('');
+    setUsername('');
+    setPassword('');
+    setServiceUrl('');
+    setCategory('');
+    setEditingId(null);
+  };
+
+  const handleToggleShow = async (pw: Password) => {
+    if (showPassword[pw.id]) {
+      setShowPassword(prev => ({ ...prev, [pw.id]: false }));
+    } else {
+      if (!decryptedPasswords[pw.id]) {
+        const decrypted = await decryptPassword(pw.encrypted_password, pw.encryption_iv, user?.email || user?.id || '');
+        setDecryptedPasswords(prev => ({ ...prev, [pw.id]: decrypted }));
+      }
+      setShowPassword(prev => ({ ...prev, [pw.id]: true }));
+    }
+  };
+
+  const handleCopy = async (pw: Password) => {
+    let plain = decryptedPasswords[pw.id];
+    if (!plain) {
+      plain = await decryptPassword(pw.encrypted_password, pw.encryption_iv, user?.email || user?.id || '');
+      setDecryptedPasswords(prev => ({ ...prev, [pw.id]: plain }));
+    }
+    await navigator.clipboard.writeText(plain);
+    toast({ title: 'Copié !' });
+  };
+
+  const handleEdit = async (pw: Password) => {
+    setEditingId(pw.id);
+    setServiceName(pw.service_name);
+    setUsername(pw.username || '');
+    setServiceUrl(pw.service_url || '');
+    setCategory(pw.category || '');
+    const plain = await decryptPassword(pw.encrypted_password, pw.encryption_iv, user?.email || user?.id || '');
+    setPassword(plain);
+    setDialogOpen(true);
+  };
+
+  return (
+    <div className="flex min-h-screen bg-background">
+      <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
+
+      <main className="flex-1 p-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+              <Lock className="h-6 w-6 text-primary" /> Mots de passe
+            </h1>
+            <p className="text-muted-foreground">
+              {passwords?.length || 0} mot(s) de passe enregistré(s)
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Rechercher..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 w-64"
+              />
+            </div>
+            <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
+              <DialogTrigger asChild>
+                <Button className="gradient-hero text-primary-foreground">
+                  <Plus className="h-4 w-4 mr-2" /> Ajouter
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{editingId ? 'Modifier' : 'Nouveau mot de passe'}</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(); }} className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-foreground">Service *</label>
+                    <Input value={serviceName} onChange={e => setServiceName(e.target.value)} placeholder="Ex: Google, Netflix..." required />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground">Identifiant</label>
+                    <Input value={username} onChange={e => setUsername(e.target.value)} placeholder="Email ou nom d'utilisateur" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground">Mot de passe *</label>
+                    <Input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required />
+                    {password && (
+                      <div className="mt-2">
+                        <div className="flex gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <div key={i} className={`h-1.5 flex-1 rounded-full ${i < getStrengthScore(password) ? strengthColors[getStrengthScore(password) - 1] : 'bg-muted'}`} />
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">{strengthLabels[getStrengthScore(password) - 1] || 'Très faible'}</p>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground">URL du site</label>
+                    <Input value={serviceUrl} onChange={e => setServiceUrl(e.target.value)} placeholder="https://..." />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground">Catégorie</label>
+                    <Input value={category} onChange={e => setCategory(e.target.value)} placeholder="Réseaux sociaux, Banque..." />
+                  </div>
+                  <Button type="submit" className="w-full gradient-hero text-primary-foreground" disabled={saveMutation.isPending}>
+                    {saveMutation.isPending ? 'Enregistrement...' : (editingId ? 'Mettre à jour' : 'Ajouter')}
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className="space-y-3">
+            {[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-muted animate-pulse rounded-xl" />)}
+          </div>
+        ) : filteredPasswords.length > 0 ? (
+          <div className="space-y-3">
+            {filteredPasswords.map(pw => (
+              <div key={pw.id} className="glass-card rounded-xl p-4 flex items-center gap-4 hover:shadow-card-hover transition-all">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  {pw.service_icon ? <img src={pw.service_icon} alt="" className="w-6 h-6" /> : <Globe className="w-5 h-5 text-primary" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-foreground">{pw.service_name}</p>
+                  <p className="text-sm text-muted-foreground truncate">{pw.username || '—'}</p>
+                </div>
+                <div className="flex items-center gap-1">
+                  {pw.password_strength_score != null && (
+                    <div className="flex gap-0.5 mr-3">
+                      {[...Array(5)].map((_, i) => (
+                        <div key={i} className={`w-1.5 h-4 rounded-full ${i < pw.password_strength_score! ? strengthColors[pw.password_strength_score! - 1] : 'bg-muted'}`} />
+                      ))}
+                    </div>
+                  )}
+                  <code className="text-sm font-mono text-muted-foreground min-w-[100px] text-right">
+                    {showPassword[pw.id] ? decryptedPasswords[pw.id] : '••••••••'}
+                  </code>
+                  <Button variant="ghost" size="icon" onClick={() => handleToggleShow(pw)}>
+                    {showPassword[pw.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleCopy(pw)}>
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleEdit(pw)}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(pw.id)} className="text-destructive hover:text-destructive">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16 text-muted-foreground">
+            <Shield className="h-16 w-16 mx-auto mb-4 opacity-30" />
+            <p className="text-lg font-medium">Aucun mot de passe</p>
+            <p className="text-sm">Ajoutez votre premier mot de passe sécurisé</p>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
