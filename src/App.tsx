@@ -11,6 +11,9 @@ import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import SphereDetail from "./pages/SphereDetail";
+import Passwords from "./pages/Passwords";
+import Assistant from "./pages/Assistant";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +38,21 @@ const App = () => (
             <Route path="/dashboard/sphere/:id" element={
               <ProtectedRoute>
                 <SphereDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/passwords" element={
+              <ProtectedRoute>
+                <Passwords />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/assistant" element={
+              <ProtectedRoute>
+                <Assistant />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/settings" element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
