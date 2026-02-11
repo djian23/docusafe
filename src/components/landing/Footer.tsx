@@ -32,7 +32,7 @@ export function Footer() {
               <div className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-soft group-hover:scale-105 transition-transform">
                 <Shield className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="text-gradient font-semibold">VaultSphere</span>
+              <span className="text-gradient font-semibold">DocuSphere</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Votre coffre-fort numérique intelligent pour organiser, sécuriser et retrouver tous vos documents importants.
