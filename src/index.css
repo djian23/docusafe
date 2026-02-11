@@ -128,6 +128,11 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
 
