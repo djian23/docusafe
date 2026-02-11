@@ -110,6 +110,8 @@ export default function Settings() {
           </div>
         </div>
       </main>
+
+      <MobileBottomNav />
     </div>
   );
 }

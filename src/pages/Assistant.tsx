@@ -225,6 +225,8 @@ export default function Assistant() {
           </form>
         </div>
       </main>
+
+      <MobileBottomNav />
     </div>
   );
 }
