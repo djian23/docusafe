@@ -66,7 +66,7 @@ async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey
 }
 
 async function encryptPassword(plaintext: string, userEmail: string): Promise<{ encrypted: string; iv: string }> {
-  const salt = new TextEncoder().encode(userEmail + '-vaultsphere').buffer as ArrayBuffer;
+  const salt = new TextEncoder().encode(userEmail + '-docusphere').buffer as ArrayBuffer;
   const key = await deriveKey(userEmail, salt);
   const ivArr = crypto.getRandomValues(new Uint8Array(12));
   const encoded = new TextEncoder().encode(plaintext);
