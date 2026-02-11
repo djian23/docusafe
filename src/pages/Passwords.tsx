@@ -394,8 +394,8 @@ export default function Passwords() {
             {/* Password Generator Dialog */}
             <Dialog open={generatorOpen} onOpenChange={(o) => { setGeneratorOpen(o); if (!o) resetGenForm(); }}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                  <Wand2 className="h-4 w-4" /> Générer
+                <Button variant="outline" size="sm" className="gap-1 md:gap-2 shrink-0">
+                  <Wand2 className="h-4 w-4" /> <span className="hidden md:inline">Générer</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-md">
