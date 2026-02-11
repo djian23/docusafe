@@ -1,26 +1,71 @@
 import { useState } from 'react';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
+import { MobileBottomNav } from '@/components/dashboard/MobileBottomNav';
 import { SphereCard } from '@/components/dashboard/SphereCard';
 import { AlertCard } from '@/components/dashboard/AlertCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useSpheres } from '@/hooks/useSpheres';
 import { useProfile } from '@/hooks/useProfile';
+import { useAuth } from '@/hooks/useAuth';
 import { Search, Plus } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const { data: spheres, isLoading: spheresLoading } = useSpheres();
   const { data: profile, isLoading: profileLoading } = useProfile();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const [newSphereOpen, setNewSphereOpen] = useState(false);
+  const [newSphereName, setNewSphereName] = useState('');
+  const [newSphereIcon, setNewSphereIcon] = useState('📁');
+  const [newSphereColor, setNewSphereColor] = useState('#3B82F6');
 
   const filteredSpheres = spheres?.filter(sphere =>
     sphere.name.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
   const storageUsed = profile?.storage_used_bytes || 0;
-  const storageLimit = profile?.storage_limit_bytes || 500 * 1024 * 1024; // 500MB default
+  const storageLimit = profile?.storage_limit_bytes || 500 * 1024 * 1024;
 
-  // Calculate alerts
+  const createSphereMutation = useMutation({
+    mutationFn: async () => {
+      if (!user || !newSphereName.trim()) throw new Error('Nom requis');
+      const position = (spheres?.length || 0) + 1;
+      const { error } = await supabase.from('spheres').insert({
+        user_id: user.id,
+        name: newSphereName.trim(),
+        icon: newSphereIcon,
+        color: newSphereColor,
+        position,
+        is_system: false,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['spheres'] });
+      setNewSphereOpen(false);
+      setNewSphereName('');
+      setNewSphereIcon('📁');
+      toast({ title: 'Sphère créée ✅' });
+    },
+    onError: () => {
+      toast({ title: 'Erreur', description: 'Impossible de créer la sphère', variant: 'destructive' });
+    },
+  });
+
   const alerts = [];
   const incompleteSpheres = spheres?.filter(s => s.filledTemplates < s.totalTemplates) || [];
   if (incompleteSpheres.length > 0) {
@@ -42,45 +87,103 @@ export default function Dashboard() {
     });
   }
 
+  const iconOptions = ['📁', '🏠', '💼', '🎓', '🏥', '🚗', '💰', '⚖️', '🎮', '📸', '🌍', '🎵'];
+
   return (
     <div className="flex min-h-screen bg-background">
-      <DashboardSidebar 
-        storageUsed={storageUsed} 
-        storageLimit={storageLimit} 
-      />
+      <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
       
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
+        {/* Mobile Header */}
+        <div className="md:hidden flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">🔐</span>
+            <span className="text-gradient font-bold text-lg">DocuSphere</span>
+          </div>
+        </div>
+
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">
               Bonjour, {profile?.full_name || 'Utilisateur'} 👋
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Gérez vos documents en toute sécurité
             </p>
           </div>
           
-          <div className="flex items-center gap-4">
-            <div className="relative">
+          <div className="flex items-center gap-2 md:gap-4">
+            <div className="relative flex-1 md:flex-initial">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Rechercher..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 w-64"
+                className="pl-10 w-full md:w-64"
               />
             </div>
-            <Button className="gradient-hero text-primary-foreground">
-              <Plus className="h-4 w-4 mr-2" />
-              Nouveau document
-            </Button>
+
+            {/* Create sphere dialog */}
+            <Dialog open={newSphereOpen} onOpenChange={setNewSphereOpen}>
+              <DialogTrigger asChild>
+                <Button className="gradient-hero text-primary-foreground shrink-0" size="sm">
+                  <Plus className="h-4 w-4 md:mr-2" />
+                  <span className="hidden md:inline">Nouvelle sphère</span>
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Nouvelle sphère</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={(e) => { e.preventDefault(); createSphereMutation.mutate(); }} className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-foreground">Nom *</label>
+                    <Input value={newSphereName} onChange={e => setNewSphereName(e.target.value)} placeholder="Ex: Voyages, Animaux..." required />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground">Icône</label>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {iconOptions.map(icon => (
+                        <button
+                          key={icon}
+                          type="button"
+                          onClick={() => setNewSphereIcon(icon)}
+                          className={`w-10 h-10 rounded-lg text-xl flex items-center justify-center transition-all ${
+                            newSphereIcon === icon ? 'bg-primary/20 ring-2 ring-primary' : 'bg-muted hover:bg-muted/80'
+                          }`}
+                        >
+                          {icon}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground">Couleur</label>
+                    <div className="flex gap-2 mt-1">
+                      {['#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#6366F1', '#14B8A6'].map(c => (
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => setNewSphereColor(c)}
+                          className={`w-8 h-8 rounded-full transition-all ${newSphereColor === c ? 'ring-2 ring-offset-2 ring-primary' : ''}`}
+                          style={{ backgroundColor: c }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <Button type="submit" className="w-full gradient-hero text-primary-foreground" disabled={createSphereMutation.isPending}>
+                    {createSphereMutation.isPending ? 'Création...' : 'Créer la sphère'}
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
         {/* Alerts */}
         {alerts.length > 0 && (
-          <div className="space-y-3 mb-8">
+          <div className="space-y-3 mb-6 md:mb-8">
             {alerts.map((alert, index) => (
               <AlertCard key={index} {...alert} />
             ))}
@@ -92,16 +195,16 @@ export default function Dashboard() {
           <h2 className="text-lg font-semibold mb-4">Vos sphères</h2>
           
           {spheresLoading || profileLoading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               {[...Array(6)].map((_, i) => (
                 <div 
                   key={i} 
-                  className="h-32 bg-muted animate-pulse rounded-xl"
+                  className="h-28 md:h-32 bg-muted animate-pulse rounded-xl"
                 />
               ))}
             </div>
           ) : filteredSpheres.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               {filteredSpheres.map((sphere) => (
                 <SphereCard
                   key={sphere.id}
@@ -122,6 +225,8 @@ export default function Dashboard() {
           )}
         </div>
       </main>
+
+      <MobileBottomNav />
     </div>
   );
 }
