@@ -491,8 +491,8 @@ export default function Passwords() {
             {/* Add password dialog */}
             <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
               <DialogTrigger asChild>
-                <Button className="gradient-hero text-primary-foreground gap-2">
-                  <Plus className="h-4 w-4" /> Ajouter
+                <Button className="gradient-hero text-primary-foreground gap-1 md:gap-2 shrink-0" size="sm">
+                  <Plus className="h-4 w-4" /> <span className="hidden md:inline">Ajouter</span>
                 </Button>
               </DialogTrigger>
               <DialogContent>
