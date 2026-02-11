@@ -369,11 +369,11 @@ export default function Passwords() {
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
 
-      <main className="flex-1 p-8">
-        <div className="flex items-center justify-between mb-8">
+      <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Lock className="h-6 w-6 text-primary" /> Mots de passe
+            <h1 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
+              <Lock className="h-5 w-5 md:h-6 md:w-6 text-primary" /> Mots de passe
             </h1>
             <p className="text-muted-foreground">
               {passwords?.length || 0} mot(s) de passe enregistré(s)
