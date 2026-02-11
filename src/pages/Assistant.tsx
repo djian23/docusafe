@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useProfile } from '@/hooks/useProfile';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
+import { MobileBottomNav } from '@/components/dashboard/MobileBottomNav';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Bot, Send, User, Loader2 } from 'lucide-react';
