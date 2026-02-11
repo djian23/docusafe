@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
+import { MobileBottomNav } from '@/components/dashboard/MobileBottomNav';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -66,7 +67,7 @@ async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey
 }
 
 async function encryptPassword(plaintext: string, userEmail: string): Promise<{ encrypted: string; iv: string }> {
-  const salt = new TextEncoder().encode(userEmail + '-vaultsphere').buffer as ArrayBuffer;
+  const salt = new TextEncoder().encode(userEmail + '-docusphere').buffer as ArrayBuffer;
   const key = await deriveKey(userEmail, salt);
   const ivArr = crypto.getRandomValues(new Uint8Array(12));
   const encoded = new TextEncoder().encode(plaintext);
@@ -79,7 +80,7 @@ async function encryptPassword(plaintext: string, userEmail: string): Promise<{ 
 
 async function decryptPassword(encrypted: string, iv: string, userEmail: string): Promise<string> {
   try {
-    const salt = new TextEncoder().encode(userEmail + '-vaultsphere').buffer as ArrayBuffer;
+    const salt = new TextEncoder().encode(userEmail + '-docusphere').buffer as ArrayBuffer;
     const key = await deriveKey(userEmail, salt);
     const ivBytes = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
     const cipherBytes = Uint8Array.from(atob(encrypted), c => c.charCodeAt(0));
@@ -368,33 +369,33 @@ export default function Passwords() {
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
 
-      <main className="flex-1 p-8">
-        <div className="flex items-center justify-between mb-8">
+      <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Lock className="h-6 w-6 text-primary" /> Mots de passe
+            <h1 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
+              <Lock className="h-5 w-5 md:h-6 md:w-6 text-primary" /> Mots de passe
             </h1>
             <p className="text-muted-foreground">
               {passwords?.length || 0} mot(s) de passe enregistré(s)
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="relative">
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="relative flex-1 md:flex-initial">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Rechercher..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 w-64"
+                className="pl-10 w-full md:w-64"
               />
             </div>
 
             {/* Password Generator Dialog */}
             <Dialog open={generatorOpen} onOpenChange={(o) => { setGeneratorOpen(o); if (!o) resetGenForm(); }}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                  <Wand2 className="h-4 w-4" /> Générer
+                <Button variant="outline" size="sm" className="gap-1 md:gap-2 shrink-0">
+                  <Wand2 className="h-4 w-4" /> <span className="hidden md:inline">Générer</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-md">
@@ -490,8 +491,8 @@ export default function Passwords() {
             {/* Add password dialog */}
             <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
               <DialogTrigger asChild>
-                <Button className="gradient-hero text-primary-foreground gap-2">
-                  <Plus className="h-4 w-4" /> Ajouter
+                <Button className="gradient-hero text-primary-foreground gap-1 md:gap-2 shrink-0" size="sm">
+                  <Plus className="h-4 w-4" /> <span className="hidden md:inline">Ajouter</span>
                 </Button>
               </DialogTrigger>
               <DialogContent>
@@ -558,7 +559,7 @@ export default function Passwords() {
                 </h2>
                 <div className="space-y-2">
                   {pws.map(pw => (
-                    <div key={pw.id} className="glass-card rounded-xl p-4 flex items-center gap-4 hover:shadow-card-hover transition-all">
+                    <div key={pw.id} className="glass-card rounded-xl p-3 md:p-4 flex items-center gap-3 md:gap-4 hover:shadow-card-hover transition-all">
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                         {pw.service_icon ? <img src={pw.service_icon} alt="" className="w-6 h-6" /> : <Globe className="w-5 h-5 text-primary" />}
                       </div>
@@ -566,27 +567,27 @@ export default function Passwords() {
                         <p className="font-medium text-foreground">{pw.service_name}</p>
                         <p className="text-sm text-muted-foreground truncate">{pw.username || '—'}</p>
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 flex-wrap justify-end">
                         {pw.password_strength_score != null && (
-                          <div className="flex gap-0.5 mr-3">
+                          <div className="hidden md:flex gap-0.5 mr-2">
                             {[...Array(5)].map((_, i) => (
                               <div key={i} className={`w-1.5 h-4 rounded-full ${i < pw.password_strength_score! ? strengthColors[pw.password_strength_score! - 1] : 'bg-muted'}`} />
                             ))}
                           </div>
                         )}
-                        <code className="text-sm font-mono text-muted-foreground min-w-[100px] text-right">
+                        <code className="hidden md:block text-sm font-mono text-muted-foreground min-w-[100px] text-right">
                           {showPassword[pw.id] ? decryptedPasswords[pw.id] : '••••••••'}
                         </code>
-                        <Button variant="ghost" size="icon" onClick={() => handleToggleShow(pw)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleToggleShow(pw)}>
                           {showPassword[pw.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleCopy(pw)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleCopy(pw)}>
                           <Copy className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(pw)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 hidden md:flex" onClick={() => handleEdit(pw)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(pw.id)} className="text-destructive hover:text-destructive">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 hidden md:flex text-destructive hover:text-destructive" onClick={() => deleteMutation.mutate(pw.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -603,7 +604,18 @@ export default function Passwords() {
             <p className="text-sm">Ajoutez votre premier mot de passe sécurisé</p>
           </div>
         )}
+
+        {/* Mobile decrypted password display */}
+        {Object.entries(showPassword).some(([, v]) => v) && (
+          <div className="md:hidden fixed bottom-20 left-4 right-4 glass-card rounded-xl p-3 text-center z-40">
+            <code className="text-sm font-mono text-foreground break-all">
+              {Object.entries(showPassword).filter(([, v]) => v).map(([id]) => decryptedPasswords[id]).filter(Boolean)[0] || ''}
+            </code>
+          </div>
+        )}
       </main>
+
+      <MobileBottomNav />
     </div>
   );
 }

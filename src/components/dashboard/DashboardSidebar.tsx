@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardSidebarProps {
   storageUsed: number;
@@ -11,7 +12,11 @@ interface DashboardSidebarProps {
 export function DashboardSidebar({ storageUsed, storageLimit }: DashboardSidebarProps) {
   const { user, signOut } = useAuth();
   const location = useLocation();
+  const isMobile = useIsMobile();
   
+  // Hide sidebar on mobile - use bottom nav instead
+  if (isMobile) return null;
+
   const storagePercentage = storageLimit > 0 ? (storageUsed / storageLimit) * 100 : 0;
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Mo';
@@ -33,7 +38,7 @@ export function DashboardSidebar({ storageUsed, storageLimit }: DashboardSidebar
       <div className="p-4 border-b border-sidebar-border">
         <Link to="/" className="flex items-center gap-2 font-bold text-xl">
           <span className="text-2xl">🔐</span>
-          <span className="text-gradient">DocuSafe</span>
+          <span className="text-gradient">DocuSphere</span>
         </Link>
       </div>
 

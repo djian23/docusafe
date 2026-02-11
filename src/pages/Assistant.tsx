@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useProfile } from '@/hooks/useProfile';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
+import { MobileBottomNav } from '@/components/dashboard/MobileBottomNav';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Bot, Send, User, Loader2 } from 'lucide-react';
@@ -141,17 +142,17 @@ export default function Assistant() {
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
 
-      <main className="flex-1 flex flex-col h-screen">
+      <main className="flex-1 flex flex-col h-screen pb-16 md:pb-0">
         {/* Header */}
-        <div className="p-6 border-b border-border">
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Bot className="h-6 w-6 text-primary" /> Assistant IA
+        <div className="p-4 md:p-6 border-b border-border">
+          <h1 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
+            <Bot className="h-5 w-5 md:h-6 md:w-6 text-primary" /> Assistant IA
           </h1>
           <p className="text-muted-foreground text-sm">Posez vos questions, même avec des fautes — je comprends !</p>
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="w-16 h-16 rounded-2xl gradient-hero flex items-center justify-center mb-4">
@@ -178,7 +179,7 @@ export default function Assistant() {
                   <Bot className="h-4 w-4 text-primary-foreground" />
                 </div>
               )}
-              <div className={`max-w-[70%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
+              <div className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
                 msg.role === 'user'
                   ? 'bg-primary text-primary-foreground rounded-br-md'
                   : 'glass-card text-foreground rounded-bl-md'
@@ -224,6 +225,8 @@ export default function Assistant() {
           </form>
         </div>
       </main>
+
+      <MobileBottomNav />
     </div>
   );
 }

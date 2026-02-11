@@ -48,7 +48,7 @@ export function FeaturesSection() {
             <span className="text-gradient">en un seul endroit</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            VaultSphere combine gestion documentaire, sécurité avancée et intelligence artificielle 
+            DocuSphere combine gestion documentaire, sécurité avancée et intelligence artificielle 
             pour vous offrir la meilleure expérience.
           </p>
         </div>
