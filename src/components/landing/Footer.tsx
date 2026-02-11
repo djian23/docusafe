@@ -91,7 +91,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} VaultSphere. Tous droits réservés.
+            © {new Date().getFullYear()} DocuSphere. Tous droits réservés.
           </p>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
