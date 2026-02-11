@@ -567,27 +567,27 @@ export default function Passwords() {
                         <p className="font-medium text-foreground">{pw.service_name}</p>
                         <p className="text-sm text-muted-foreground truncate">{pw.username || '—'}</p>
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 flex-wrap justify-end">
                         {pw.password_strength_score != null && (
-                          <div className="flex gap-0.5 mr-3">
+                          <div className="hidden md:flex gap-0.5 mr-2">
                             {[...Array(5)].map((_, i) => (
                               <div key={i} className={`w-1.5 h-4 rounded-full ${i < pw.password_strength_score! ? strengthColors[pw.password_strength_score! - 1] : 'bg-muted'}`} />
                             ))}
                           </div>
                         )}
-                        <code className="text-sm font-mono text-muted-foreground min-w-[100px] text-right">
+                        <code className="hidden md:block text-sm font-mono text-muted-foreground min-w-[100px] text-right">
                           {showPassword[pw.id] ? decryptedPasswords[pw.id] : '••••••••'}
                         </code>
-                        <Button variant="ghost" size="icon" onClick={() => handleToggleShow(pw)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleToggleShow(pw)}>
                           {showPassword[pw.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleCopy(pw)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleCopy(pw)}>
                           <Copy className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(pw)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 hidden md:flex" onClick={() => handleEdit(pw)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(pw.id)} className="text-destructive hover:text-destructive">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 hidden md:flex text-destructive hover:text-destructive" onClick={() => deleteMutation.mutate(pw.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
