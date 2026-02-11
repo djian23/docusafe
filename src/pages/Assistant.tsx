@@ -142,7 +142,7 @@ export default function Assistant() {
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
 
-      <main className="flex-1 flex flex-col h-screen">
+      <main className="flex-1 flex flex-col h-screen pb-16 md:pb-0">
         {/* Header */}
         <div className="p-6 border-b border-border">
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
