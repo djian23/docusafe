@@ -179,7 +179,7 @@ export default function Assistant() {
                   <Bot className="h-4 w-4 text-primary-foreground" />
                 </div>
               )}
-              <div className={`max-w-[70%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
+              <div className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
                 msg.role === 'user'
                   ? 'bg-primary text-primary-foreground rounded-br-md'
                   : 'glass-card text-foreground rounded-bl-md'
