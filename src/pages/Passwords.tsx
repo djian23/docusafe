@@ -604,7 +604,18 @@ export default function Passwords() {
             <p className="text-sm">Ajoutez votre premier mot de passe sécurisé</p>
           </div>
         )}
+
+        {/* Mobile decrypted password display */}
+        {Object.entries(showPassword).some(([, v]) => v) && (
+          <div className="md:hidden fixed bottom-20 left-4 right-4 glass-card rounded-xl p-3 text-center z-40">
+            <code className="text-sm font-mono text-foreground break-all">
+              {Object.entries(showPassword).filter(([, v]) => v).map(([id]) => decryptedPasswords[id]).filter(Boolean)[0] || ''}
+            </code>
+          </div>
+        )}
       </main>
+
+      <MobileBottomNav />
     </div>
   );
 }
