@@ -79,7 +79,7 @@ async function encryptPassword(plaintext: string, userEmail: string): Promise<{ 
 
 async function decryptPassword(encrypted: string, iv: string, userEmail: string): Promise<string> {
   try {
-    const salt = new TextEncoder().encode(userEmail + '-vaultsphere').buffer as ArrayBuffer;
+    const salt = new TextEncoder().encode(userEmail + '-docusphere').buffer as ArrayBuffer;
     const key = await deriveKey(userEmail, salt);
     const ivBytes = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
     const cipherBytes = Uint8Array.from(atob(encrypted), c => c.charCodeAt(0));

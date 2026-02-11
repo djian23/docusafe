@@ -16,7 +16,7 @@ export function Footer() {
       { label: "RGPD", href: "#" },
     ],
     contact: [
-      { label: "support@docusafe.app", href: "mailto:support@docusafe.app" },
+      { label: "support@docusphere.app", href: "mailto:support@docusphere.app" },
       { label: "Centre d'aide", href: "#" },
       { label: "Status", href: "#" },
     ],

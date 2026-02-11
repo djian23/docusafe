@@ -28,7 +28,7 @@ export default function Login() {
 
       toast({
         title: "Connexion réussie",
-        description: "Bienvenue sur VaultSphere !",
+        description: "Bienvenue sur DocuSphere !",
       });
       navigate("/dashboard");
     } catch (error: any) {

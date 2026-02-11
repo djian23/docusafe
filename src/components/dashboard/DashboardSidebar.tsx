@@ -33,7 +33,7 @@ export function DashboardSidebar({ storageUsed, storageLimit }: DashboardSidebar
       <div className="p-4 border-b border-sidebar-border">
         <Link to="/" className="flex items-center gap-2 font-bold text-xl">
           <span className="text-2xl">🔐</span>
-          <span className="text-gradient">DocuSafe</span>
+          <span className="text-gradient">DocuSphere</span>
         </Link>
       </div>
 
