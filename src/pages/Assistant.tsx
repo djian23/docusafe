@@ -144,9 +144,9 @@ export default function Assistant() {
 
       <main className="flex-1 flex flex-col h-screen pb-16 md:pb-0">
         {/* Header */}
-        <div className="p-6 border-b border-border">
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Bot className="h-6 w-6 text-primary" /> Assistant IA
+        <div className="p-4 md:p-6 border-b border-border">
+          <h1 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
+            <Bot className="h-5 w-5 md:h-6 md:w-6 text-primary" /> Assistant IA
           </h1>
           <p className="text-muted-foreground text-sm">Posez vos questions, même avec des fautes — je comprends !</p>
         </div>
