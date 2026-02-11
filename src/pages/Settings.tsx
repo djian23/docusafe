@@ -48,12 +48,12 @@ export default function Settings() {
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
 
-      <main className="flex-1 p-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <SettingsIcon className="h-6 w-6 text-primary" /> Paramètres
+      <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
+            <SettingsIcon className="h-5 w-5 md:h-6 md:w-6 text-primary" /> Paramètres
           </h1>
-          <p className="text-muted-foreground">Gérez votre profil et vos préférences</p>
+          <p className="text-sm text-muted-foreground">Gérez votre profil et vos préférences</p>
         </div>
 
         <div className="max-w-2xl space-y-6">
