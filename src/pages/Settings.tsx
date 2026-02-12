@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -40,9 +40,9 @@ export default function Settings() {
   });
 
   // Sync form when profile loads
-  useState(() => {
-    if (profile?.full_name && !fullName) setFullName(profile.full_name);
-  });
+  useEffect(() => {
+    if (profile?.full_name) setFullName(profile.full_name);
+  }, [profile?.full_name]);
 
   return (
     <div className="flex min-h-screen bg-background">

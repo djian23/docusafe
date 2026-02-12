@@ -66,9 +66,10 @@ async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey
   );
 }
 
-async function encryptPassword(plaintext: string, userEmail: string): Promise<{ encrypted: string; iv: string }> {
-  const salt = new TextEncoder().encode(userEmail + '-docusphere').buffer as ArrayBuffer;
-  const key = await deriveKey(userEmail, salt);
+async function encryptPassword(plaintext: string, userEmail: string, userId: string): Promise<{ encrypted: string; iv: string }> {
+  const saltSource = `docusphere-v2-${userId}-${userEmail}`;
+  const salt = new TextEncoder().encode(saltSource).buffer as ArrayBuffer;
+  const key = await deriveKey(saltSource, salt);
   const ivArr = crypto.getRandomValues(new Uint8Array(12));
   const encoded = new TextEncoder().encode(plaintext);
   const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: ivArr.buffer as ArrayBuffer }, key, encoded);
@@ -78,10 +79,11 @@ async function encryptPassword(plaintext: string, userEmail: string): Promise<{ 
   };
 }
 
-async function decryptPassword(encrypted: string, iv: string, userEmail: string): Promise<string> {
+async function decryptPassword(encrypted: string, iv: string, userEmail: string, userId: string): Promise<string> {
   try {
-    const salt = new TextEncoder().encode(userEmail + '-docusphere').buffer as ArrayBuffer;
-    const key = await deriveKey(userEmail, salt);
+    const saltSource = `docusphere-v2-${userId}-${userEmail}`;
+    const salt = new TextEncoder().encode(saltSource).buffer as ArrayBuffer;
+    const key = await deriveKey(saltSource, salt);
     const ivBytes = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
     const cipherBytes = Uint8Array.from(atob(encrypted), c => c.charCodeAt(0));
     const plainBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: ivBytes.buffer as ArrayBuffer }, key, cipherBytes);
@@ -112,7 +114,7 @@ function generatePassword(length: number, useUppercase: boolean, useNumbers: boo
 }
 
 const strengthLabels = ['Très faible', 'Faible', 'Moyen', 'Fort', 'Très fort'];
-const strengthColors = ['bg-destructive', 'bg-destructive', 'bg-[hsl(45,93%,47%)]', 'bg-[hsl(142,76%,36%)]', 'bg-[hsl(142,76%,36%)]'];
+const strengthColors = ['bg-destructive', 'bg-destructive', 'bg-warning', 'bg-success', 'bg-success'];
 
 export default function Passwords() {
   const { user } = useAuth();
@@ -211,7 +213,7 @@ export default function Passwords() {
         throw new Error('Champs obligatoires manquants');
       }
 
-      const { encrypted, iv } = await encryptPassword(thePw, user.email || user.id);
+      const { encrypted, iv } = await encryptPassword(thePw, user.email || '', user.id);
       const score = getStrengthScore(thePw);
 
       if (editingId) {
@@ -290,7 +292,7 @@ export default function Passwords() {
       setShowPassword(prev => ({ ...prev, [pw.id]: false }));
     } else {
       if (!decryptedPasswords[pw.id]) {
-        const decrypted = await decryptPassword(pw.encrypted_password, pw.encryption_iv, user?.email || user?.id || '');
+        const decrypted = await decryptPassword(pw.encrypted_password, pw.encryption_iv, user?.email || '', user?.id || '');
         setDecryptedPasswords(prev => ({ ...prev, [pw.id]: decrypted }));
       }
       setShowPassword(prev => ({ ...prev, [pw.id]: true }));
@@ -300,7 +302,7 @@ export default function Passwords() {
   const handleCopy = async (pw: Password) => {
     let plain = decryptedPasswords[pw.id];
     if (!plain) {
-      plain = await decryptPassword(pw.encrypted_password, pw.encryption_iv, user?.email || user?.id || '');
+      plain = await decryptPassword(pw.encrypted_password, pw.encryption_iv, user?.email || '', user?.id || '');
       setDecryptedPasswords(prev => ({ ...prev, [pw.id]: plain }));
     }
     await navigator.clipboard.writeText(plain);
@@ -320,7 +322,7 @@ export default function Passwords() {
       setCustomCategory(pw.category);
       setShowCustomCategory(true);
     }
-    const plain = await decryptPassword(pw.encrypted_password, pw.encryption_iv, user?.email || user?.id || '');
+    const plain = await decryptPassword(pw.encrypted_password, pw.encryption_iv, user?.email || '', user?.id || '');
     setPassword(plain);
     setDialogOpen(true);
   };
