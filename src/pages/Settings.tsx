@@ -9,6 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Settings as SettingsIcon, User, Mail, Save, LogOut } from 'lucide-react';
+import { PageTransition } from '@/components/animations/PageTransition';
+import { SlideIn } from '@/components/animations/SlideIn';
+import { StaggerContainer, StaggerItem } from '@/components/animations/StaggerContainer';
 
 export default function Settings() {
   const { user, signOut } = useAuth();
@@ -45,19 +48,23 @@ export default function Settings() {
   }, [profile?.full_name]);
 
   return (
+    <PageTransition direction="right">
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
 
       <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
+        <SlideIn direction="down" delay={0.1}>
         <div className="mb-6 md:mb-8">
           <h1 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
             <SettingsIcon className="h-5 w-5 md:h-6 md:w-6 text-primary" /> Paramètres
           </h1>
           <p className="text-sm text-muted-foreground">Gérez votre profil et vos préférences</p>
         </div>
+        </SlideIn>
 
-        <div className="max-w-2xl space-y-6">
+        <StaggerContainer className="max-w-2xl space-y-6" staggerDelay={0.12} initialDelay={0.2}>
           {/* Profile */}
+          <StaggerItem>
           <div className="glass-card rounded-xl p-6">
             <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
               <User className="h-5 w-5 text-primary" /> Profil
@@ -87,8 +94,10 @@ export default function Settings() {
               </Button>
             </form>
           </div>
+          </StaggerItem>
 
           {/* Plan */}
+          <StaggerItem>
           <div className="glass-card rounded-xl p-6">
             <h2 className="text-lg font-semibold text-foreground mb-2">Abonnement</h2>
             <div className="flex items-center gap-3">
@@ -100,18 +109,22 @@ export default function Settings() {
               </span>
             </div>
           </div>
+          </StaggerItem>
 
           {/* Danger Zone */}
+          <StaggerItem>
           <div className="glass-card rounded-xl p-6 border-destructive/30">
             <h2 className="text-lg font-semibold text-destructive mb-4">Zone dangereuse</h2>
             <Button variant="destructive" onClick={signOut}>
               <LogOut className="h-4 w-4 mr-2" /> Se déconnecter
             </Button>
           </div>
-        </div>
+          </StaggerItem>
+        </StaggerContainer>
       </main>
 
       <MobileBottomNav />
     </div>
+    </PageTransition>
   );
 }

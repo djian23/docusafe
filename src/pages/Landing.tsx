@@ -4,18 +4,21 @@ import { FeaturesSection } from "@/components/landing/FeaturesSection";
 import { PricingSection } from "@/components/landing/PricingSection";
 import { SecuritySection } from "@/components/landing/SecuritySection";
 import { Footer } from "@/components/landing/Footer";
+import { PageTransition } from "@/components/animations/PageTransition";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main>
-        <HeroSection />
-        <FeaturesSection />
-        <PricingSection />
-        <SecuritySection />
-      </main>
-      <Footer />
-    </div>
+    <PageTransition>
+      <div className="min-h-screen">
+        <Header />
+        <main>
+          <HeroSection />
+          <FeaturesSection />
+          <PricingSection />
+          <SecuritySection />
+        </main>
+        <Footer />
+      </div>
+    </PageTransition>
   );
 }

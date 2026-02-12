@@ -8,6 +8,10 @@ import { MobileBottomNav } from '@/components/dashboard/MobileBottomNav';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { PageTransition } from '@/components/animations/PageTransition';
+import { SlideIn } from '@/components/animations/SlideIn';
+import { StaggerContainer, StaggerItem } from '@/components/animations/StaggerContainer';
+import { motion } from 'framer-motion';
 import {
   Dialog,
   DialogContent,
@@ -368,10 +372,12 @@ export default function Passwords() {
   );
 
   return (
+    <PageTransition direction="right">
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
 
       <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
+        <SlideIn direction="down" delay={0.1}>
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
           <div>
             <h1 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
@@ -546,22 +552,28 @@ export default function Passwords() {
             </Dialog>
           </div>
         </div>
+        </SlideIn>
 
         {isLoading ? (
           <div className="space-y-3">
             {[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-muted animate-pulse rounded-xl" />)}
           </div>
         ) : Object.keys(groupedPasswords).length > 0 ? (
-          <div className="space-y-6">
+          <StaggerContainer className="space-y-6" staggerDelay={0.1} initialDelay={0.2}>
             {Object.entries(groupedPasswords).map(([cat, pws]) => (
-              <div key={cat}>
+              <StaggerItem key={cat}>
                 <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-primary" />
                   {cat} ({pws.length})
                 </h2>
                 <div className="space-y-2">
                   {pws.map(pw => (
-                    <div key={pw.id} className="glass-card rounded-xl p-3 md:p-4 flex items-center gap-3 md:gap-4 hover:shadow-card-hover transition-all">
+                    <motion.div
+                      key={pw.id}
+                      className="glass-card rounded-xl p-3 md:p-4 flex items-center gap-3 md:gap-4 hover:shadow-card-hover transition-all"
+                      whileHover={{ scale: 1.01, x: 4 }}
+                      transition={{ type: 'spring', stiffness: 300 }}
+                    >
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                         {pw.service_icon ? <img src={pw.service_icon} alt="" className="w-6 h-6" /> : <Globe className="w-5 h-5 text-primary" />}
                       </div>
@@ -593,18 +605,29 @@ export default function Passwords() {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         ) : (
-          <div className="text-center py-16 text-muted-foreground">
-            <Shield className="h-16 w-16 mx-auto mb-4 opacity-30" />
+          <motion.div
+            className="text-center py-16 text-muted-foreground"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 200, delay: 0.4 }}
+            >
+              <Shield className="h-16 w-16 mx-auto mb-4 opacity-30" />
+            </motion.div>
             <p className="text-lg font-medium">Aucun mot de passe</p>
             <p className="text-sm">Ajoutez votre premier mot de passe sécurisé</p>
-          </div>
+          </motion.div>
         )}
 
         {/* Mobile decrypted password display */}
@@ -619,5 +642,6 @@ export default function Passwords() {
 
       <MobileBottomNav />
     </div>
+    </PageTransition>
   );
 }
