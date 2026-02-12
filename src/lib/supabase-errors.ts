@@ -21,7 +21,7 @@ const SUPABASE_ERROR_TRANSLATIONS: Record<string, string> = {
   "Invalid login credentials":
     "Email ou mot de passe incorrect.",
   "Email not confirmed":
-    "Veuillez confirmer votre email avant de vous connecter.",
+    "Compte créé. Veuillez réessayer de vous connecter.",
   "Invalid Refresh Token: Refresh Token Not Found":
     "Votre session a expiré. Veuillez vous reconnecter.",
 
