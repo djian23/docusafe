@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="50%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#EC4899"/>
+    </linearGradient>
+    <linearGradient id="sphereGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60A5FA"/>
+      <stop offset="40%" style="stop-color:#A78BFA"/>
+      <stop offset="100%" style="stop-color:#F472B6"/>
+    </linearGradient>
+    <linearGradient id="innerGlow" x1="30%" y1="20%" x2="70%" y2="80%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.4"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </linearGradient>
+    <radialGradient id="sphereRadial" cx="40%" cy="35%" r="50%">
+      <stop offset="0%" style="stop-color:#93C5FD;stop-opacity:0.9"/>
+      <stop offset="50%" style="stop-color:#818CF8;stop-opacity:0.7"/>
+      <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:0.4"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="sphereGlow">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="shieldClip">
+      <path d="M256 28C256 28 80 100 80 100C80 100 80 260 80 300C80 400 256 484 256 484C256 484 432 400 432 300C432 260 432 100 432 100C432 100 256 28 256 28Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Outer glow -->
+  <path d="M256 28C256 28 80 100 80 100C80 100 80 260 80 300C80 400 256 484 256 484C256 484 432 400 432 300C432 260 432 100 432 100C432 100 256 28 256 28Z"
+        fill="url(#shieldGrad)" opacity="0.3" filter="url(#glow)"/>
+
+  <!-- Shield body -->
+  <path d="M256 44C256 44 96 110 96 110C96 110 96 264 96 300C96 390 256 468 256 468C256 468 416 390 416 300C416 264 416 110 416 110C416 110 256 44 256 44Z"
+        fill="url(#shieldGrad)" stroke="url(#shieldGrad)" stroke-width="2"/>
+
+  <!-- Shield inner highlight -->
+  <path d="M256 60C256 60 112 122 112 122C112 122 112 268 112 300C112 382 256 454 256 454C256 454 400 382 400 300C400 268 400 122 400 122C400 122 256 60 256 60Z"
+        fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+
+  <!-- Top highlight gradient on shield -->
+  <path d="M256 44C256 44 96 110 96 110C96 110 96 200 96 200C256 160 416 200 416 200C416 200 416 110 416 110C416 110 256 44 256 44Z"
+        fill="url(#innerGlow)" opacity="0.5"/>
+
+  <!-- Central sphere glow -->
+  <circle cx="256" cy="240" r="85" fill="url(#sphereGrad)" opacity="0.25" filter="url(#sphereGlow)"/>
+
+  <!-- Central sphere -->
+  <circle cx="256" cy="240" r="62" fill="url(#sphereGrad)" opacity="0.9"/>
+
+  <!-- Sphere specular highlight -->
+  <circle cx="256" cy="240" r="62" fill="url(#sphereRadial)"/>
+
+  <!-- Sphere top highlight -->
+  <ellipse cx="244" cy="218" rx="28" ry="18" fill="white" opacity="0.3"/>
+
+  <!-- Sphere rim light -->
+  <circle cx="256" cy="240" r="60" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+
+  <!-- Orbit ring 1 -->
+  <ellipse cx="256" cy="240" rx="90" ry="32" fill="none" stroke="url(#sphereGrad)" stroke-width="1.5" opacity="0.4" transform="rotate(-20 256 240)"/>
+
+  <!-- Orbit ring 2 -->
+  <ellipse cx="256" cy="240" rx="95" ry="28" fill="none" stroke="url(#sphereGrad)" stroke-width="1" opacity="0.25" transform="rotate(25 256 240)"/>
+
+  <!-- Small orbital dots -->
+  <circle cx="340" cy="220" r="5" fill="#60A5FA" opacity="0.7"/>
+  <circle cx="175" cy="258" r="4" fill="#A78BFA" opacity="0.6"/>
+  <circle cx="290" cy="280" r="3" fill="#F472B6" opacity="0.5"/>
+</svg>

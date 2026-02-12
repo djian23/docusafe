@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Shield, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
+import { LogoIcon } from "@/components/ui/LogoIcon";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "./ScrollReveal";
 
@@ -34,11 +35,11 @@ export function Footer() {
             <div>
               <Link to="/" className="flex items-center gap-2.5 font-bold text-xl mb-5 group">
                 <motion.div
-                  className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-soft"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center shadow-soft overflow-hidden"
                   whileHover={{ rotate: 15, scale: 1.1 }}
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
-                  <Shield className="w-5 h-5 text-primary-foreground" />
+                  <LogoIcon size={36} />
                 </motion.div>
                 <span className="text-gradient font-semibold">DocuSphere</span>
               </Link>

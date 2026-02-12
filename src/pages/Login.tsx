@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Shield, Mail, Lock, ArrowRight } from "lucide-react";
+import { LogoIcon } from "@/components/ui/LogoIcon";
 import { translateSupabaseError } from "@/lib/supabase-errors";
 import { PageTransition } from "@/components/animations/PageTransition";
 import { FloatingElements } from "@/components/animations/FloatingElements";
@@ -84,12 +85,12 @@ export default function Login() {
             <div className="text-center mb-8">
               <Link to="/" className="inline-flex items-center gap-3 font-bold text-2xl mb-4 group justify-center">
                 <motion.div
-                  className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow overflow-hidden"
                   whileHover={{ rotate: 15, scale: 1.1, rotateY: 180 }}
                   whileTap={{ scale: 0.9 }}
                   style={{ transformStyle: 'preserve-3d' }}
                 >
-                  <Shield className="w-6 h-6 text-primary-foreground" />
+                  <LogoIcon size={48} />
                 </motion.div>
                 <span className="text-gradient">DocuSphere</span>
               </Link>
