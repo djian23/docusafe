@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useProfile } from '@/hooks/useProfile';
 
 interface DashboardSidebarProps {
   storageUsed: number;
@@ -13,6 +14,7 @@ export function DashboardSidebar({ storageUsed, storageLimit }: DashboardSidebar
   const { user, signOut } = useAuth();
   const location = useLocation();
   const isMobile = useIsMobile();
+  const { data: profile } = useProfile();
   
   // Hide sidebar on mobile - use bottom nav instead
   if (isMobile) return null;
@@ -52,7 +54,9 @@ export function DashboardSidebar({ storageUsed, storageLimit }: DashboardSidebar
             <p className="text-sm font-medium truncate text-sidebar-foreground">
               {user?.email?.split('@')[0] || 'Utilisateur'}
             </p>
-            <p className="text-xs text-sidebar-foreground/60">Plan Gratuit</p>
+            <p className="text-xs text-sidebar-foreground/60">
+              Plan {profile?.plan ? profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1) : 'Gratuit'}
+            </p>
           </div>
         </div>
       </div>

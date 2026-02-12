@@ -6,7 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Mail, Lock, ArrowRight, Check } from "lucide-react";
+import { Shield, Mail, Lock, ArrowRight, Check, AlertTriangle } from "lucide-react";
+import { translateSupabaseError, isRateLimitError } from "@/lib/supabase-errors";
+import { checkSupabaseConnection } from "@/integrations/supabase/client";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -14,6 +16,7 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [rateLimitHit, setRateLimitHit] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -54,8 +57,19 @@ export default function Signup() {
     }
 
     setLoading(true);
+    setRateLimitHit(false);
 
     try {
+      const isConnected = await checkSupabaseConnection();
+      if (!isConnected) {
+        toast({
+          title: "Erreur de connexion",
+          description: "Impossible de joindre le serveur. Vérifiez votre connexion internet.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -72,9 +86,16 @@ export default function Signup() {
       });
       navigate("/login");
     } catch (error: any) {
+      const message = error?.message || "Une erreur inattendue est survenue.";
+      const translated = translateSupabaseError(message);
+
+      if (isRateLimitError(message)) {
+        setRateLimitHit(true);
+      }
+
       toast({
-        title: "Erreur d'inscription",
-        description: error.message,
+        title: isRateLimitError(message) ? "Limite atteinte" : "Erreur d'inscription",
+        description: translated,
         variant: "destructive",
       });
     } finally {
@@ -107,6 +128,19 @@ export default function Signup() {
         </div>
 
         <div className="backdrop-blur-xl bg-card/80 rounded-2xl p-8 shadow-2xl border border-white/10 ring-1 ring-black/5">
+          {rateLimitHit && (
+            <div className="mb-4 p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-sm text-destructive flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium">Limite de tentatives atteinte</p>
+                <p className="mt-1 text-destructive/80">
+                  Le service d'envoi d'emails est temporairement limité.
+                  Veuillez patienter environ 1 heure avant de réessayer.
+                  Si vous avez déjà reçu un email de confirmation, vérifiez votre boîte de réception et vos spams.
+                </p>
+              </div>
+            </div>
+          )}
           <form onSubmit={handleSignup} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">Email</Label>

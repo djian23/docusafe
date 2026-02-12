@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { translateSupabaseError } from "@/lib/supabase-errors";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -29,9 +30,10 @@ export default function ForgotPassword() {
         description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
       });
     } catch (error: any) {
+      const message = error?.message || "Une erreur inattendue est survenue.";
       toast({
         title: "Erreur",
-        description: error.message,
+        description: translateSupabaseError(message),
         variant: "destructive",
       });
     } finally {

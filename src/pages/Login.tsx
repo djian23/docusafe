@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Shield, Mail, Lock, ArrowRight } from "lucide-react";
+import { translateSupabaseError } from "@/lib/supabase-errors";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -32,11 +33,10 @@ export default function Login() {
       });
       navigate("/dashboard");
     } catch (error: any) {
+      const message = error?.message || "Une erreur inattendue est survenue.";
       toast({
         title: "Erreur de connexion",
-        description: error.message === "Invalid login credentials" 
-          ? "Email ou mot de passe incorrect" 
-          : error.message,
+        description: translateSupabaseError(message),
         variant: "destructive",
       });
     } finally {
