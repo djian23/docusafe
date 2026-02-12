@@ -200,9 +200,27 @@ export function FileTemplateCard({
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleDownload}
+              onClick={async () => {
+                if (!file) return;
+                setIsDownloading(true);
+                try {
+                  const { data, error } = await supabase.storage
+                    .from('user-documents')
+                    .createSignedUrl(file.file_path, 300);
+                  if (error) throw error;
+                  const previewWindow = window.open(data.signedUrl, '_blank');
+                  if (!previewWindow) {
+                    toast({ title: 'Erreur', description: 'Impossible d\'ouvrir l\'aperçu. Vérifiez les popups.', variant: 'destructive' });
+                  }
+                } catch {
+                  toast({ title: 'Erreur', description: 'Impossible de prévisualiser.', variant: 'destructive' });
+                } finally {
+                  setIsDownloading(false);
+                }
+              }}
               disabled={isDownloading}
-              title="Voir"
+              title="Prévisualiser"
+              aria-label="Prévisualiser le fichier"
             >
               <Eye className="h-4 w-4" />
             </Button>
