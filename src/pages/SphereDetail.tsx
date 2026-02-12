@@ -11,6 +11,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ChevronLeft, Upload, Plus, Edit, Check, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { PageTransition } from '@/components/animations/PageTransition';
+import { SlideIn } from '@/components/animations/SlideIn';
+import { StaggerContainer, StaggerItem } from '@/components/animations/StaggerContainer';
+import { motion } from 'framer-motion';
 
 interface FileTemplate {
   id: string;
@@ -230,11 +234,13 @@ export default function SphereDetail() {
   }
 
   return (
+    <PageTransition direction="left">
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
-      
+
       <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
         {/* Breadcrumb */}
+        <SlideIn direction="left" delay={0.05}>
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4 md:mb-6">
           <Link to="/dashboard" className="hover:text-foreground transition-colors flex items-center gap-1">
             <ChevronLeft className="h-4 w-4" />
@@ -242,15 +248,20 @@ export default function SphereDetail() {
             <span className="md:hidden">Retour</span>
           </Link>
         </div>
+        </SlideIn>
 
         {/* Header */}
+        <SlideIn direction="down" delay={0.1}>
         <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
-          <div 
+          <motion.div
             className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center text-2xl md:text-3xl shrink-0"
             style={{ backgroundColor: `${sphere.color || '#3B82F6'}20` }}
+            initial={{ scale: 0, rotate: -90 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 200, delay: 0.15 }}
           >
             {sphere.icon || '📁'}
-          </div>
+          </motion.div>
           <div className="flex-1 min-w-0">
             {isRenaming ? (
               <div className="flex items-center gap-2">
@@ -281,29 +292,34 @@ export default function SphereDetail() {
             </p>
           </div>
         </div>
+        </SlideIn>
 
         {/* Templates */}
         <div className="space-y-4 mb-6 md:mb-8">
-          <h2 className="text-base md:text-lg font-semibold">Documents</h2>
+          <SlideIn direction="left" delay={0.2}>
+            <h2 className="text-base md:text-lg font-semibold">Documents</h2>
+          </SlideIn>
           {templates && templates.length > 0 ? (
-            <div className="space-y-3">
+            <StaggerContainer className="space-y-3" staggerDelay={0.08} initialDelay={0.25}>
               {templates.map((template) => (
+                <StaggerItem key={template.id}>
                 <FileTemplateCard
-                  key={template.id}
                   template={template}
                   file={getFileForTemplate(template.id)}
                   onUpload={(file) => handleFileUpload(template.id, file)}
                   isUploading={uploadingTemplateId === template.id}
                   sphereId={sphere.id}
                 />
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           ) : (
             <p className="text-muted-foreground text-sm">Aucun document requis pour cette sphère.</p>
           )}
         </div>
 
         {/* Custom Files */}
+        <SlideIn direction="up" delay={0.35}>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base md:text-lg font-semibold">Documents personnalisés</h2>
@@ -334,16 +350,23 @@ export default function SphereDetail() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 border border-dashed rounded-xl text-muted-foreground">
+            <motion.div
+              className="text-center py-8 border border-dashed rounded-xl text-muted-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
               <Upload className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">Aucun document personnalisé</p>
               <p className="text-xs">Ajoutez des fichiers supplémentaires ici</p>
-            </div>
+            </motion.div>
           )}
         </div>
+        </SlideIn>
       </main>
 
       <MobileBottomNav />
     </div>
+    </PageTransition>
   );
 }

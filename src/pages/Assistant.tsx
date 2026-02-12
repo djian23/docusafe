@@ -5,6 +5,9 @@ import { MobileBottomNav } from '@/components/dashboard/MobileBottomNav';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Bot, Send, User, Loader2 } from 'lucide-react';
+import { PageTransition } from '@/components/animations/PageTransition';
+import { SlideIn } from '@/components/animations/SlideIn';
+import { motion } from 'framer-motion';
 
 type Msg = { role: 'user' | 'assistant'; content: string };
 
@@ -139,41 +142,67 @@ export default function Assistant() {
   };
 
   return (
+    <PageTransition direction="right">
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
 
       <main className="flex-1 flex flex-col h-screen pb-16 md:pb-0">
         {/* Header */}
+        <SlideIn direction="down" delay={0.1}>
         <div className="p-4 md:p-6 border-b border-border">
           <h1 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
             <Bot className="h-5 w-5 md:h-6 md:w-6 text-primary" /> Assistant IA
           </h1>
           <p className="text-muted-foreground text-sm">Posez vos questions, même avec des fautes — je comprends !</p>
         </div>
+        </SlideIn>
 
         {/* Messages */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="w-16 h-16 rounded-2xl gradient-hero flex items-center justify-center mb-4">
+            <motion.div
+              className="flex flex-col items-center justify-center h-full text-center"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <motion.div
+                className="w-16 h-16 rounded-2xl gradient-hero flex items-center justify-center mb-4"
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', stiffness: 200, delay: 0.3 }}
+              >
                 <Bot className="h-8 w-8 text-primary-foreground" />
-              </div>
+              </motion.div>
               <h2 className="text-lg font-semibold text-foreground mb-2">Comment puis-je vous aider ?</h2>
               <p className="text-muted-foreground mb-6 max-w-md">
                 Je peux vous aider à organiser vos documents, répondre à vos questions administratives, et bien plus.
               </p>
               <div className="flex flex-wrap gap-2 justify-center">
                 {suggestions.map((s, i) => (
-                  <Button key={i} variant="outline" size="sm" className="text-sm" onClick={() => send(s)}>
-                    {s}
-                  </Button>
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + i * 0.1 }}
+                  >
+                    <Button variant="outline" size="sm" className="text-sm" onClick={() => send(s)}>
+                      {s}
+                    </Button>
+                  </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {messages.map((msg, i) => (
-            <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <motion.div
+              key={i}
+              className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              initial={{ opacity: 0, y: 10, x: msg.role === 'user' ? 20 : -20 }}
+              animate={{ opacity: 1, y: 0, x: 0 }}
+              transition={{ duration: 0.3 }}
+            >
               {msg.role === 'assistant' && (
                 <div className="w-8 h-8 rounded-lg gradient-hero flex items-center justify-center flex-shrink-0">
                   <Bot className="h-4 w-4 text-primary-foreground" />
@@ -191,7 +220,7 @@ export default function Assistant() {
                   <User className="h-4 w-4 text-muted-foreground" />
                 </div>
               )}
-            </div>
+            </motion.div>
           ))}
 
           {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
@@ -228,5 +257,6 @@ export default function Assistant() {
 
       <MobileBottomNav />
     </div>
+    </PageTransition>
   );
 }

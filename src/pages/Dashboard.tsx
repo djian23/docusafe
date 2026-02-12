@@ -19,6 +19,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { PageTransition } from '@/components/animations/PageTransition';
+import { SlideIn } from '@/components/animations/SlideIn';
+import { StaggerContainer, StaggerItem } from '@/components/animations/StaggerContainer';
+import { motion } from 'framer-motion';
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -90,19 +94,26 @@ export default function Dashboard() {
   const iconOptions = ['📁', '🏠', '💼', '🎓', '🏥', '🚗', '💰', '⚖️', '🎮', '📸', '🌍', '🎵'];
 
   return (
+    <PageTransition direction="right">
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar storageUsed={storageUsed} storageLimit={storageLimit} />
-      
+
       <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
         {/* Mobile Header */}
-        <div className="md:hidden flex items-center justify-between mb-4">
+        <motion.div
+          className="md:hidden flex items-center justify-between mb-4"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <div className="flex items-center gap-2">
             <span className="text-2xl">🔐</span>
             <span className="text-gradient font-bold text-lg">DocuSphere</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Header */}
+        <SlideIn direction="down" delay={0.1}>
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
           <div>
             <h1 className="text-xl md:text-2xl font-bold text-foreground">
@@ -180,53 +191,65 @@ export default function Dashboard() {
             </Dialog>
           </div>
         </div>
+        </SlideIn>
 
         {/* Alerts */}
         {alerts.length > 0 && (
-          <div className="space-y-3 mb-6 md:mb-8">
+          <StaggerContainer className="space-y-3 mb-6 md:mb-8" initialDelay={0.2}>
             {alerts.map((alert, index) => (
-              <AlertCard key={index} {...alert} />
+              <StaggerItem key={index}>
+                <AlertCard {...alert} />
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         )}
 
         {/* Spheres Grid */}
+        <SlideIn direction="up" delay={0.3}>
         <div>
           <h2 className="text-lg font-semibold mb-4">Vos sphères</h2>
-          
+
           {spheresLoading || profileLoading ? (
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               {[...Array(6)].map((_, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className="h-28 md:h-32 bg-muted animate-pulse rounded-xl"
                 />
               ))}
             </div>
           ) : filteredSpheres.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            <StaggerContainer className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4" staggerDelay={0.06}>
               {filteredSpheres.map((sphere) => (
-                <SphereCard
-                  key={sphere.id}
-                  id={sphere.id}
-                  name={sphere.name}
-                  icon={sphere.icon || '📁'}
-                  color={sphere.color || '#3B82F6'}
-                  totalTemplates={sphere.totalTemplates}
-                  filledTemplates={sphere.filledTemplates}
-                />
+                <StaggerItem key={sphere.id}>
+                  <SphereCard
+                    id={sphere.id}
+                    name={sphere.name}
+                    icon={sphere.icon || '📁'}
+                    color={sphere.color || '#3B82F6'}
+                    totalTemplates={sphere.totalTemplates}
+                    filledTemplates={sphere.filledTemplates}
+                  />
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           ) : (
-            <div className="text-center py-12 text-muted-foreground">
+            <motion.div
+              className="text-center py-12 text-muted-foreground"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+            >
               <p className="text-4xl mb-4">📭</p>
               <p>Aucune sphère trouvée</p>
-            </div>
+            </motion.div>
           )}
         </div>
+        </SlideIn>
       </main>
 
       <MobileBottomNav />
     </div>
+    </PageTransition>
   );
 }
