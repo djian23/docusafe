@@ -27,6 +27,9 @@ export function Header() {
           <a href="#security" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
             Sécurité
           </a>
+          <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
+            FAQ
+          </a>
         </nav>
         
         <div className="flex items-center gap-2 md:gap-3">
@@ -66,6 +69,7 @@ export function Header() {
               <a href="#features" onClick={() => setMenuOpen(false)} className="text-foreground font-medium py-2">Fonctionnalités</a>
               <a href="#pricing" onClick={() => setMenuOpen(false)} className="text-foreground font-medium py-2">Tarifs</a>
               <a href="#security" onClick={() => setMenuOpen(false)} className="text-foreground font-medium py-2">Sécurité</a>
+              <a href="#faq" onClick={() => setMenuOpen(false)} className="text-foreground font-medium py-2">FAQ</a>
               <div className="flex gap-2 pt-2 border-t border-border/50">
                 <Link to="/login" className="flex-1" onClick={() => setMenuOpen(false)}>
                   <Button variant="outline" className="w-full">Se connecter</Button>
