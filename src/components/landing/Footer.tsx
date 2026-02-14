@@ -14,15 +14,15 @@ export function Footer() {
       { label: "S'inscrire", href: "/signup", isRoute: true },
     ],
     legal: [
-      { label: "Conditions d'utilisation", href: "#" },
-      { label: "Politique de confidentialité", href: "#" },
-      { label: "Mentions légales", href: "#" },
-      { label: "RGPD", href: "#" },
+      { label: "Conditions d'utilisation", href: "/terms", isRoute: true },
+      { label: "Politique de confidentialité", href: "/privacy", isRoute: true },
+      { label: "Mentions légales", href: "/legal", isRoute: true },
+      { label: "RGPD", href: "/gdpr", isRoute: true },
     ],
     contact: [
       { label: "support@docusphere.app", href: "mailto:support@docusphere.app" },
-      { label: "Centre d'aide", href: "#" },
-      { label: "Status", href: "#" },
+      { label: "Centre d'aide", href: "/help", isRoute: true },
+      { label: "Status", href: "/status", isRoute: true },
     ],
   };
 
@@ -74,9 +74,15 @@ export function Footer() {
               <ul className="space-y-3">
                 {footerLinks.legal.map((link, i) => (
                   <li key={i}>
-                    <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                      {link.label}
-                    </a>
+                    {link.isRoute ? (
+                      <Link to={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -88,9 +94,15 @@ export function Footer() {
               <ul className="space-y-3">
                 {footerLinks.contact.map((link, i) => (
                   <li key={i}>
-                    <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                      {link.label}
-                    </a>
+                    {link.isRoute ? (
+                      <Link to={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
