@@ -16,7 +16,7 @@ export default function GDPR() {
       <section>
         <h2 className="text-xl font-semibold mb-3">Notre engagement</h2>
         <p className="text-muted-foreground leading-relaxed">
-          DocuSphere est conçu dès sa conception pour respecter le Règlement Général sur la Protection des Données (RGPD - Règlement UE 2016/679).
+          Koffr est conçu dès sa conception pour respecter le Règlement Général sur la Protection des Données (RGPD - Règlement UE 2016/679).
           Nous appliquons les principes de <strong className="text-foreground">Privacy by Design</strong> et <strong className="text-foreground">Privacy by Default</strong>
           dans toutes les fonctionnalités de notre plateforme.
         </p>
@@ -52,7 +52,7 @@ export default function GDPR() {
           <div className="p-4 rounded-xl bg-card border border-border">
             <h3 className="font-semibold mb-2">Option 2 : Par e-mail</h3>
             <p className="text-sm text-muted-foreground">
-              Envoyez votre demande à <a href="mailto:dpo@docusphere.app" className="text-primary hover:underline">dpo@docusphere.app</a> avec
+              Envoyez votre demande à <a href="mailto:dpo@koffr.app" className="text-primary hover:underline">dpo@koffr.app</a> avec
               l'objet "Exercice de droits RGPD". Nous traiterons votre demande sous 30 jours maximum.
             </p>
           </div>
@@ -140,7 +140,7 @@ export default function GDPR() {
       <section>
         <h2 className="text-xl font-semibold mb-3">Notification de violation</h2>
         <p className="text-muted-foreground leading-relaxed">
-          En cas de violation de données personnelles, DocuSphere s'engage à :
+          En cas de violation de données personnelles, Koffr s'engage à :
         </p>
         <ul className="list-disc pl-6 space-y-2 text-muted-foreground mt-3">
           <li>Notifier la <strong className="text-foreground">CNIL</strong> dans les 72 heures suivant la découverte de la violation</li>
@@ -154,7 +154,7 @@ export default function GDPR() {
         <h2 className="text-xl font-semibold mb-3">Contact DPO</h2>
         <p className="text-muted-foreground leading-relaxed">
           Notre Délégué à la Protection des Données est joignable à tout moment :<br />
-          E-mail : <a href="mailto:dpo@docusphere.app" className="text-primary hover:underline">dpo@docusphere.app</a><br /><br />
+          E-mail : <a href="mailto:dpo@koffr.app" className="text-primary hover:underline">dpo@koffr.app</a><br /><br />
           Vous pouvez également adresser une réclamation à l'autorité de contrôle compétente :<br />
           <strong className="text-foreground">CNIL</strong> - 3 Place de Fontenoy, TSA 80715, 75334 Paris Cedex 07<br />
           Site web : cnil.fr

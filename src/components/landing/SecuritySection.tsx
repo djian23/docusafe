@@ -69,7 +69,7 @@ export function SecuritySection() {
               c'est notre <span className="text-primary">fondation</span>
             </h2>
             <p className="text-sidebar-foreground/70 max-w-2xl mx-auto text-base md:text-lg">
-              Chez DocuSphere, chaque fonctionnalité est conçue avec la sécurité comme priorité.
+              Chez Koffr, chaque fonctionnalité est conçue avec la sécurité comme priorité.
             </p>
           </div>
         </TextReveal3D>

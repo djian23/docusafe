@@ -32,4 +32,4 @@ Allow: /
 Disallow: /dashboard
 Disallow: /dashboard/*
 
-Sitemap: https://docusphere.app/sitemap.xml
+Sitemap: https://koffr.app/sitemap.xml

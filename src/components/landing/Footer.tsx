@@ -20,7 +20,7 @@ export function Footer() {
       { label: "RGPD", href: "/gdpr", isRoute: true },
     ],
     contact: [
-      { label: "support@docusphere.app", href: "mailto:support@docusphere.app" },
+      { label: "support@koffr.app", href: "mailto:support@koffr.app" },
       { label: "Centre d'aide", href: "/help", isRoute: true },
       { label: "Status", href: "/status", isRoute: true },
     ],
@@ -41,7 +41,7 @@ export function Footer() {
                 >
                   <LogoIcon size={36} />
                 </motion.div>
-                <span className="text-gradient font-semibold">DocuSphere</span>
+                <span className="text-gradient font-semibold">Koffr</span>
               </Link>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Votre coffre-fort numérique intelligent pour organiser, sécuriser et retrouver tous vos documents importants. Solution française hébergée en Europe.
@@ -113,7 +113,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} DocuSphere. Tous droits réservés.
+            © {new Date().getFullYear()} Koffr. Tous droits réservés.
           </p>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">

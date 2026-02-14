@@ -62,7 +62,7 @@ export default function ForgotPassword() {
                 >
                   <Shield className="w-6 h-6 text-primary-foreground" />
                 </motion.div>
-                <span className="text-gradient">DocuSphere</span>
+                <span className="text-gradient">Koffr</span>
               </Link>
               <p className="text-muted-foreground">
                 Réinitialiser votre mot de passe

@@ -109,7 +109,7 @@ export default function Dashboard() {
         >
           <div className="flex items-center gap-2">
             <LogoIcon size={28} />
-            <span className="text-gradient font-bold text-lg">DocuSphere</span>
+            <span className="text-gradient font-bold text-lg">Koffr</span>
           </div>
         </motion.div>
 

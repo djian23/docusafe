@@ -90,7 +90,7 @@ export default function Signup() {
 
       toast({
         title: "Inscription réussie !",
-        description: "Bienvenue sur DocuSphere !",
+        description: "Bienvenue sur Koffr !",
       });
       navigate("/dashboard");
     } catch (error: any) {
@@ -126,7 +126,7 @@ export default function Signup() {
                 >
                   <LogoIcon size={48} />
                 </motion.div>
-                <span className="text-gradient">DocuSphere</span>
+                <span className="text-gradient">Koffr</span>
               </Link>
               <h1 className="text-2xl font-semibold text-foreground mb-2">
                 Créez votre compte

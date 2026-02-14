@@ -37,7 +37,7 @@ export default function Login() {
 
       toast({
         title: "Connexion réussie",
-        description: "Bienvenue sur DocuSphere !",
+        description: "Bienvenue sur Koffr !",
       });
       navigate("/dashboard");
     } catch (error: any) {
@@ -92,7 +92,7 @@ export default function Login() {
                 >
                   <LogoIcon size={48} />
                 </motion.div>
-                <span className="text-gradient">DocuSphere</span>
+                <span className="text-gradient">Koffr</span>
               </Link>
               <motion.h1
                 className="text-2xl font-semibold text-foreground mb-2"
