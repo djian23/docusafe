@@ -12,13 +12,22 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Koffr",
+  "legalName": "Koffr SAS",
   "url": "https://koffr.app",
   "logo": "https://koffr.app/favicon.ico",
   "description": "Coffre-fort numérique intelligent pour organiser, sécuriser et retrouver vos documents importants.",
+  "email": "contact@koffr.app",
+  "foundingDate": "2026",
+  "numberOfEmployees": { "@type": "QuantitativeValue", "value": "10" },
   "address": {
     "@type": "PostalAddress",
+    "streetAddress": "15 Rue de la Paix",
+    "addressLocality": "Paris",
+    "postalCode": "75002",
     "addressCountry": "FR",
   },
+  "areaServed": { "@type": "Place", "name": "Europe" },
+  "knowsLanguage": "fr",
 };
 
 const webAppSchema = {
@@ -88,6 +97,8 @@ export default function Landing() {
         <meta name="description" content="Koffr est le coffre-fort numérique intelligent qui organise vos documents, gère vos mots de passe et retrouve vos fichiers grâce à l'IA. Chiffrement AES-256, 100% hébergé en Europe, RGPD compliant. Gratuit jusqu'à 500 MB." />
         <meta name="keywords" content="coffre-fort numérique, gestion documents sécurisée, gestionnaire mots de passe, chiffrement AES-256, RGPD, stockage sécurisé Europe, assistant IA documents, sécurité bancaire, zero-knowledge, organisation documents" />
         <link rel="canonical" href="https://koffr.app" />
+        <link rel="alternate" hrefLang="fr" href="https://koffr.app" />
+        <link rel="alternate" hrefLang="x-default" href="https://koffr.app" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="author" content="Koffr" />
         <meta name="geo.region" content="FR" />

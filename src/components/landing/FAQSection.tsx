@@ -54,6 +54,8 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
       <motion.button
         className="w-full flex items-center justify-between p-4 md:p-5 text-left"
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        aria-controls={`faq-answer-${index}`}
         whileHover={{ backgroundColor: 'hsl(var(--accent) / 0.3)' }}
         transition={{ duration: 0.2 }}
       >
@@ -73,7 +75,7 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
             exit={{ height: 0, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 200, damping: 25 }}
           >
-            <div className="px-4 md:px-5 pb-4 md:pb-5 text-sm md:text-base text-muted-foreground leading-relaxed border-t border-border/50 pt-3">
+            <div id={`faq-answer-${index}`} role="region" aria-labelledby={`faq-question-${index}`} className="px-4 md:px-5 pb-4 md:pb-5 text-sm md:text-base text-muted-foreground leading-relaxed border-t border-border/50 pt-3">
               {answer}
             </div>
           </motion.div>
