@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
-import { Shield, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
+import { LogoIcon } from "@/components/ui/LogoIcon";
+import { motion } from "framer-motion";
+import { ScrollReveal } from "./ScrollReveal";
 
 export function Footer() {
   const footerLinks = {
@@ -7,87 +10,106 @@ export function Footer() {
       { label: "Fonctionnalités", href: "#features" },
       { label: "Tarifs", href: "#pricing" },
       { label: "Sécurité", href: "#security" },
+      { label: "FAQ", href: "#faq" },
       { label: "S'inscrire", href: "/signup", isRoute: true },
     ],
     legal: [
-      { label: "Conditions d'utilisation", href: "#" },
-      { label: "Politique de confidentialité", href: "#" },
-      { label: "Mentions légales", href: "#" },
-      { label: "RGPD", href: "#" },
+      { label: "Conditions d'utilisation", href: "/terms", isRoute: true },
+      { label: "Politique de confidentialité", href: "/privacy", isRoute: true },
+      { label: "Mentions légales", href: "/legal", isRoute: true },
+      { label: "RGPD", href: "/gdpr", isRoute: true },
     ],
     contact: [
       { label: "support@docusphere.app", href: "mailto:support@docusphere.app" },
-      { label: "Centre d'aide", href: "#" },
-      { label: "Status", href: "#" },
+      { label: "Centre d'aide", href: "/help", isRoute: true },
+      { label: "Status", href: "/status", isRoute: true },
     ],
   };
 
   return (
-    <footer className="py-16 border-t border-border bg-card/50">
+    <footer className="py-16 border-t border-border bg-card/50" role="contentinfo">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-10 mb-12">
-          {/* Brand */}
-          <div>
-            <Link to="/" className="flex items-center gap-2.5 font-bold text-xl mb-5 group">
-              <div className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-soft group-hover:scale-105 transition-transform">
-                <Shield className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-gradient font-semibold">DocuSphere</span>
-            </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Votre coffre-fort numérique intelligent pour organiser, sécuriser et retrouver tous vos documents importants.
-            </p>
+        <ScrollReveal>
+          <div className="grid md:grid-cols-4 gap-10 mb-12">
+            {/* Brand */}
+            <div>
+              <Link to="/" className="flex items-center gap-2.5 font-bold text-xl mb-5 group">
+                <motion.div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center shadow-soft overflow-hidden"
+                  whileHover={{ rotate: 15, scale: 1.1 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
+                  <LogoIcon size={36} />
+                </motion.div>
+                <span className="text-gradient font-semibold">DocuSphere</span>
+              </Link>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Votre coffre-fort numérique intelligent pour organiser, sécuriser et retrouver tous vos documents importants. Solution française hébergée en Europe.
+              </p>
+            </div>
+
+            {/* Product links */}
+            <nav aria-label="Liens produit">
+              <h4 className="font-semibold mb-5">Produit</h4>
+              <ul className="space-y-3">
+                {footerLinks.product.map((link, i) => (
+                  <li key={i}>
+                    {link.isRoute ? (
+                      <Link to={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* Legal links */}
+            <nav aria-label="Liens légaux">
+              <h4 className="font-semibold mb-5">Légal</h4>
+              <ul className="space-y-3">
+                {footerLinks.legal.map((link, i) => (
+                  <li key={i}>
+                    {link.isRoute ? (
+                      <Link to={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* Contact */}
+            <div>
+              <h4 className="font-semibold mb-5">Contact</h4>
+              <ul className="space-y-3">
+                {footerLinks.contact.map((link, i) => (
+                  <li key={i}>
+                    {link.isRoute ? (
+                      <Link to={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          
-          {/* Product links */}
-          <div>
-            <h4 className="font-semibold mb-5">Produit</h4>
-            <ul className="space-y-3">
-              {footerLinks.product.map((link, i) => (
-                <li key={i}>
-                  {link.isRoute ? (
-                    <Link to={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                      {link.label}
-                    </Link>
-                  ) : (
-                    <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                      {link.label}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Legal links */}
-          <div>
-            <h4 className="font-semibold mb-5">Légal</h4>
-            <ul className="space-y-3">
-              {footerLinks.legal.map((link, i) => (
-                <li key={i}>
-                  <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Contact */}
-          <div>
-            <h4 className="font-semibold mb-5">Contact</h4>
-            <ul className="space-y-3">
-              {footerLinks.contact.map((link, i) => (
-                <li key={i}>
-                  <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        
+        </ScrollReveal>
+
         {/* Bottom bar */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">

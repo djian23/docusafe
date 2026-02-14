@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Mail, Lock, ArrowRight, Check, AlertTriangle } from "lucide-react";
-import { translateSupabaseError, isRateLimitError } from "@/lib/supabase-errors";
+import { Shield, Mail, Lock, ArrowRight, Check } from "lucide-react";
+import { LogoIcon } from "@/components/ui/LogoIcon";
+import { translateSupabaseError } from "@/lib/supabase-errors";
 import { checkSupabaseConnection } from "@/integrations/supabase/client";
 import { PageTransition } from "@/components/animations/PageTransition";
 import { FloatingElements } from "@/components/animations/FloatingElements";
@@ -20,7 +21,6 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [rateLimitHit, setRateLimitHit] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -61,7 +61,6 @@ export default function Signup() {
     }
 
     setLoading(true);
-    setRateLimitHit(false);
 
     try {
       const isConnected = await checkSupabaseConnection();
@@ -77,28 +76,29 @@ export default function Signup() {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/login`,
-        },
       });
 
       if (error) throw error;
 
+      // Auto-login after signup
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (loginError) throw loginError;
+
       toast({
         title: "Inscription réussie !",
-        description: "Vérifiez votre email pour confirmer votre compte.",
+        description: "Bienvenue sur DocuSphere !",
       });
-      navigate("/login");
+      navigate("/dashboard");
     } catch (error: any) {
       const message = error?.message || "Une erreur inattendue est survenue.";
       const translated = translateSupabaseError(message);
 
-      if (isRateLimitError(message)) {
-        setRateLimitHit(true);
-      }
-
       toast({
-        title: isRateLimitError(message) ? "Limite atteinte" : "Erreur d'inscription",
+        title: "Erreur d'inscription",
         description: translated,
         variant: "destructive",
       });
@@ -117,14 +117,14 @@ export default function Signup() {
             <div className="text-center mb-8">
               <Link to="/" className="inline-flex items-center gap-3 font-bold text-2xl mb-4 group justify-center">
                 <motion.div
-                  className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow overflow-hidden"
                   whileHover={{ rotate: -15, scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   initial={{ rotate: -180, scale: 0 }}
                   animate={{ rotate: 0, scale: 1 }}
                   transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
                 >
-                  <Shield className="w-6 h-6 text-primary-foreground" />
+                  <LogoIcon size={48} />
                 </motion.div>
                 <span className="text-gradient">DocuSphere</span>
               </Link>
@@ -144,24 +144,6 @@ export default function Signup() {
               animate={{ scale: 1 }}
               transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
             >
-              {rateLimitHit && (
-                <motion.div
-                  className="mb-4 p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-sm text-destructive flex items-start gap-3"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium">Limite de tentatives atteinte</p>
-                    <p className="mt-1 text-destructive/80">
-                      Le service d'envoi d'emails est temporairement limité.
-                      Veuillez patienter environ 1 heure avant de réessayer.
-                      Si vous avez déjà reçu un email de confirmation, vérifiez votre boîte de réception et vos spams.
-                    </p>
-                  </div>
-                </motion.div>
-              )}
               <form onSubmit={handleSignup} className="space-y-5">
                 <motion.div
                   className="space-y-2"

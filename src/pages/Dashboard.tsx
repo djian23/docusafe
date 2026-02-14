@@ -23,6 +23,7 @@ import { PageTransition } from '@/components/animations/PageTransition';
 import { SlideIn } from '@/components/animations/SlideIn';
 import { StaggerContainer, StaggerItem } from '@/components/animations/StaggerContainer';
 import { motion } from 'framer-motion';
+import { LogoIcon } from '@/components/ui/LogoIcon';
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -107,7 +108,7 @@ export default function Dashboard() {
           transition={{ duration: 0.3 }}
         >
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🔐</span>
+            <LogoIcon size={28} />
             <span className="text-gradient font-bold text-lg">DocuSphere</span>
           </div>
         </motion.div>

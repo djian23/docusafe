@@ -6,11 +6,15 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Shield, Mail, Lock, ArrowRight } from "lucide-react";
+import { LogoIcon } from "@/components/ui/LogoIcon";
 import { translateSupabaseError } from "@/lib/supabase-errors";
 import { PageTransition } from "@/components/animations/PageTransition";
 import { FloatingElements } from "@/components/animations/FloatingElements";
 import { SlideIn } from "@/components/animations/SlideIn";
 import { motion } from "framer-motion";
+import { Suspense, lazy } from "react";
+
+const MorphingBlob = lazy(() => import('@/components/animations/MorphingBlob').then(m => ({ default: m.MorphingBlob })));
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -53,22 +57,52 @@ export default function Login() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-accent/50 to-background p-4 relative overflow-hidden">
         <FloatingElements />
 
+        {/* 3D morphing blobs in background */}
+        <Suspense fallback={null}>
+          <MorphingBlob className="opacity-30" />
+        </Suspense>
+
+        {/* Animated floating shapes */}
+        <motion.div
+          className="absolute top-[15%] left-[10%] w-16 h-16 rounded-2xl border border-primary/10 bg-primary/5"
+          animate={{ rotate: 360, y: [0, -20, 0] }}
+          transition={{ rotate: { duration: 20, repeat: Infinity, ease: 'linear' }, y: { duration: 5, repeat: Infinity } }}
+          style={{ perspective: 600 }}
+        />
+        <motion.div
+          className="absolute bottom-[20%] right-[8%] w-12 h-12 rounded-full border border-sphere-family/10 bg-sphere-family/5"
+          animate={{ rotate: -360, scale: [1, 1.2, 1] }}
+          transition={{ rotate: { duration: 15, repeat: Infinity, ease: 'linear' }, scale: { duration: 4, repeat: Infinity } }}
+        />
+        <motion.div
+          className="absolute top-[40%] right-[15%] w-8 h-8 rounded-lg border border-sphere-housing/15 bg-sphere-housing/5"
+          animate={{ rotate: 180, x: [0, 15, 0], y: [0, -10, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
         <div className="w-full max-w-md relative z-10">
           <SlideIn direction="down" delay={0.1}>
             <div className="text-center mb-8">
               <Link to="/" className="inline-flex items-center gap-3 font-bold text-2xl mb-4 group justify-center">
                 <motion.div
-                  className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow"
-                  whileHover={{ rotate: 15, scale: 1.1 }}
+                  className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow overflow-hidden"
+                  whileHover={{ rotate: 15, scale: 1.1, rotateY: 180 }}
                   whileTap={{ scale: 0.9 }}
+                  style={{ transformStyle: 'preserve-3d' }}
                 >
-                  <Shield className="w-6 h-6 text-primary-foreground" />
+                  <LogoIcon size={48} />
                 </motion.div>
                 <span className="text-gradient">DocuSphere</span>
               </Link>
-              <h1 className="text-2xl font-semibold text-foreground mb-2">
+              <motion.h1
+                className="text-2xl font-semibold text-foreground mb-2"
+                initial={{ opacity: 0, rotateX: 45 }}
+                animate={{ opacity: 1, rotateX: 0 }}
+                transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}
+                style={{ perspective: 600 }}
+              >
                 Bon retour parmi nous
-              </h1>
+              </motion.h1>
               <p className="text-muted-foreground text-sm">
                 Connectez-vous à votre coffre-fort
               </p>
@@ -78,9 +112,10 @@ export default function Login() {
           <SlideIn direction="up" delay={0.2}>
             <motion.div
               className="backdrop-blur-xl bg-card/80 rounded-2xl p-8 shadow-2xl border border-white/10 ring-1 ring-black/5"
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
+              initial={{ scale: 0.95, rotateX: 10 }}
+              animate={{ scale: 1, rotateX: 0 }}
               transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+              style={{ perspective: 800, transformStyle: 'preserve-3d' }}
             >
               <form onSubmit={handleLogin} className="space-y-4">
                 <motion.div
@@ -135,23 +170,25 @@ export default function Login() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
                 >
-                  <Button
-                    type="submit"
-                    className="w-full h-11 gradient-hero text-primary-foreground font-medium shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all group"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <span className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                        Connexion...
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-2">
-                        Se connecter
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </span>
-                    )}
-                  </Button>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      type="submit"
+                      className="w-full h-11 gradient-hero text-primary-foreground font-medium shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all group"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <span className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                          Connexion...
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-2">
+                          Se connecter
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                      )}
+                    </Button>
+                  </motion.div>
                 </motion.div>
               </form>
 

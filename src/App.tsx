@@ -16,6 +16,12 @@ import Passwords from "./pages/Passwords";
 import Assistant from "./pages/Assistant";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import LegalNotice from "./pages/LegalNotice";
+import GDPR from "./pages/GDPR";
+import HelpCenter from "./pages/HelpCenter";
+import StatusPage from "./pages/StatusPage";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +60,13 @@ function AnimatedRoutes() {
             <Settings />
           </ProtectedRoute>
         } />
+        {/* Legal & info pages */}
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/legal" element={<LegalNotice />} />
+        <Route path="/gdpr" element={<GDPR />} />
+        <Route path="/help" element={<HelpCenter />} />
+        <Route path="/status" element={<StatusPage />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Shield, ArrowRight, Menu } from "lucide-react";
+import { ArrowRight, Menu } from "lucide-react";
+import { LogoIcon } from "@/components/ui/LogoIcon";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -11,8 +12,8 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
       <div className="container mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-bold text-lg md:text-xl group" aria-label="DocuSphere - Accueil">
-          <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl gradient-hero flex items-center justify-center shadow-soft group-hover:scale-105 transition-transform">
-            <Shield className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" aria-hidden="true" />
+          <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center shadow-soft group-hover:scale-105 transition-transform overflow-hidden">
+            <LogoIcon size={36} />
           </div>
           <span className="text-gradient font-semibold">DocuSphere</span>
         </Link>
@@ -26,6 +27,9 @@ export function Header() {
           </a>
           <a href="#security" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
             Sécurité
+          </a>
+          <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
+            FAQ
           </a>
         </nav>
         
@@ -66,6 +70,7 @@ export function Header() {
               <a href="#features" onClick={() => setMenuOpen(false)} className="text-foreground font-medium py-2">Fonctionnalités</a>
               <a href="#pricing" onClick={() => setMenuOpen(false)} className="text-foreground font-medium py-2">Tarifs</a>
               <a href="#security" onClick={() => setMenuOpen(false)} className="text-foreground font-medium py-2">Sécurité</a>
+              <a href="#faq" onClick={() => setMenuOpen(false)} className="text-foreground font-medium py-2">FAQ</a>
               <div className="flex gap-2 pt-2 border-t border-border/50">
                 <Link to="/login" className="flex-1" onClick={() => setMenuOpen(false)}>
                   <Button variant="outline" className="w-full">Se connecter</Button>
