@@ -22,7 +22,7 @@ export function LegalPageLayout({ title, lastUpdated, children }: LegalPageLayou
               <div className="w-8 h-8 rounded-xl flex items-center justify-center overflow-hidden">
                 <LogoIcon size={32} />
               </div>
-              <span className="text-gradient font-semibold">DocuSphere</span>
+              <span className="text-gradient font-semibold">Koffr</span>
             </Link>
             <Link to="/">
               <Button variant="ghost" size="sm" className="gap-2">

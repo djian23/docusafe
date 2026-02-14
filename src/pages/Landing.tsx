@@ -11,9 +11,9 @@ import { Helmet } from "react-helmet-async";
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "DocuSphere",
-  "url": "https://docusphere.app",
-  "logo": "https://docusphere.app/favicon.ico",
+  "name": "Koffr",
+  "url": "https://koffr.app",
+  "logo": "https://koffr.app/favicon.ico",
   "description": "Coffre-fort numérique intelligent pour organiser, sécuriser et retrouver vos documents importants.",
   "address": {
     "@type": "PostalAddress",
@@ -24,8 +24,8 @@ const organizationSchema = {
 const webAppSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "DocuSphere",
-  "url": "https://docusphere.app",
+  "name": "Koffr",
+  "url": "https://koffr.app",
   "applicationCategory": "SecurityApplication",
   "operatingSystem": "Web",
   "description": "Coffre-fort numérique intelligent avec chiffrement AES-256, gestionnaire de mots de passe et assistant IA. 100% hébergé en Europe, RGPD compliant.",
@@ -75,7 +75,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "name": "Accueil",
-      "item": "https://docusphere.app",
+      "item": "https://koffr.app",
     },
   ],
 };
@@ -84,22 +84,22 @@ export default function Landing() {
   return (
     <PageTransition>
       <Helmet>
-        <title>DocuSphere - Coffre-fort numérique intelligent | Sécurisez vos documents</title>
-        <meta name="description" content="DocuSphere est le coffre-fort numérique intelligent qui organise vos documents, gère vos mots de passe et retrouve vos fichiers grâce à l'IA. Chiffrement AES-256, 100% hébergé en Europe, RGPD compliant. Gratuit jusqu'à 500 MB." />
+        <title>Koffr - Coffre-fort numérique intelligent | Sécurisez vos documents</title>
+        <meta name="description" content="Koffr est le coffre-fort numérique intelligent qui organise vos documents, gère vos mots de passe et retrouve vos fichiers grâce à l'IA. Chiffrement AES-256, 100% hébergé en Europe, RGPD compliant. Gratuit jusqu'à 500 MB." />
         <meta name="keywords" content="coffre-fort numérique, gestion documents sécurisée, gestionnaire mots de passe, chiffrement AES-256, RGPD, stockage sécurisé Europe, assistant IA documents, sécurité bancaire, zero-knowledge, organisation documents" />
-        <link rel="canonical" href="https://docusphere.app" />
+        <link rel="canonical" href="https://koffr.app" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <meta name="author" content="DocuSphere" />
+        <meta name="author" content="Koffr" />
         <meta name="geo.region" content="FR" />
         <meta name="geo.placename" content="France" />
-        <meta property="og:title" content="DocuSphere - Coffre-fort numérique intelligent" />
+        <meta property="og:title" content="Koffr - Coffre-fort numérique intelligent" />
         <meta property="og:description" content="Organisez vos documents, gérez vos mots de passe et retrouvez vos fichiers grâce à l'IA. Chiffrement AES-256, 100% hébergé en Europe." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://docusphere.app" />
-        <meta property="og:site_name" content="DocuSphere" />
+        <meta property="og:url" content="https://koffr.app" />
+        <meta property="og:site_name" content="Koffr" />
         <meta property="og:locale" content="fr_FR" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="DocuSphere - Coffre-fort numérique intelligent" />
+        <meta name="twitter:title" content="Koffr - Coffre-fort numérique intelligent" />
         <meta name="twitter:description" content="Organisez vos documents, gérez vos mots de passe et retrouvez vos fichiers grâce à l'IA." />
         <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>

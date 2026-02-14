@@ -6,35 +6,35 @@ import { TextReveal3D } from "@/components/animations/TextReveal3D";
 
 const faqs = [
   {
-    question: "Qu'est-ce que DocuSphere ?",
-    answer: "DocuSphere est un coffre-fort numérique intelligent qui vous permet d'organiser tous vos documents importants (identité, famille, logement, travail, finances, santé...) de manière sécurisée. Il intègre un gestionnaire de mots de passe chiffré et un assistant IA pour retrouver vos fichiers instantanément.",
+    question: "Qu'est-ce que Koffr ?",
+    answer: "Koffr est un coffre-fort numérique intelligent qui vous permet d'organiser tous vos documents importants (identité, famille, logement, travail, finances, santé...) de manière sécurisée. Il intègre un gestionnaire de mots de passe chiffré et un assistant IA pour retrouver vos fichiers instantanément.",
   },
   {
-    question: "Comment DocuSphere protège-t-il mes données ?",
-    answer: "DocuSphere utilise un chiffrement AES-256-GCM de bout en bout, le même standard que les banques et les gouvernements. Vos mots de passe sont chiffrés localement avec une architecture Zero-Knowledge : même nos équipes n'y ont pas accès. Toutes les données sont hébergées en Europe, en conformité avec le RGPD.",
+    question: "Comment Koffr protège-t-il mes données ?",
+    answer: "Koffr utilise un chiffrement AES-256-GCM de bout en bout, le même standard que les banques et les gouvernements. Vos mots de passe sont chiffrés localement avec une architecture Zero-Knowledge : même nos équipes n'y ont pas accès. Toutes les données sont hébergées en Europe, en conformité avec le RGPD.",
   },
   {
-    question: "DocuSphere est-il gratuit ?",
-    answer: "Oui ! DocuSphere propose un plan gratuit permanent avec 500 MB de stockage, 11 sphères pré-configurées, un gestionnaire de mots de passe complet et 10 requêtes IA par mois. Aucune carte bancaire n'est requise. Des plans Starter (9€/mois) et Pro (29€/mois) sont disponibles pour plus de stockage et de fonctionnalités.",
+    question: "Koffr est-il gratuit ?",
+    answer: "Oui ! Koffr propose un plan gratuit permanent avec 500 MB de stockage, 11 sphères pré-configurées, un gestionnaire de mots de passe complet et 10 requêtes IA par mois. Aucune carte bancaire n'est requise. Des plans Starter (9€/mois) et Pro (29€/mois) sont disponibles pour plus de stockage et de fonctionnalités.",
   },
   {
     question: "Où sont hébergées mes données ?",
-    answer: "Toutes vos données sont hébergées sur des serveurs européens, en conformité totale avec le Règlement Général sur la Protection des Données (RGPD). DocuSphere est une solution française qui respecte les standards les plus stricts en matière de protection des données personnelles.",
+    answer: "Toutes vos données sont hébergées sur des serveurs européens, en conformité totale avec le Règlement Général sur la Protection des Données (RGPD). Koffr est une solution française qui respecte les standards les plus stricts en matière de protection des données personnelles.",
   },
   {
-    question: "Comment fonctionne l'assistant IA de DocuSphere ?",
-    answer: "L'assistant IA de DocuSphere vous permet de retrouver n'importe quel document en langage naturel. Il suffit de taper une requête comme \"Trouve mon RIB\" ou \"Où est mon attestation d'assurance ?\" pour que l'IA identifie et affiche le document en quelques secondes, sans avoir à naviguer dans vos dossiers.",
+    question: "Comment fonctionne l'assistant IA de Koffr ?",
+    answer: "L'assistant IA de Koffr vous permet de retrouver n'importe quel document en langage naturel. Il suffit de taper une requête comme \"Trouve mon RIB\" ou \"Où est mon attestation d'assurance ?\" pour que l'IA identifie et affiche le document en quelques secondes, sans avoir à naviguer dans vos dossiers.",
   },
   {
     question: "Puis-je accéder à mes documents depuis plusieurs appareils ?",
-    answer: "Oui, DocuSphere est accessible depuis n'importe quel appareil (ordinateur, tablette, smartphone) via votre navigateur web. Vos documents sont synchronisés en temps réel et disponibles partout, tout en restant protégés par le chiffrement de bout en bout.",
+    answer: "Oui, Koffr est accessible depuis n'importe quel appareil (ordinateur, tablette, smartphone) via votre navigateur web. Vos documents sont synchronisés en temps réel et disponibles partout, tout en restant protégés par le chiffrement de bout en bout.",
   },
   {
-    question: "Quelle est la différence entre DocuSphere et un simple cloud comme Google Drive ?",
-    answer: "Contrairement à un cloud généraliste, DocuSphere est spécialement conçu pour organiser vos documents importants par catégories (sphères). Il intègre un gestionnaire de mots de passe chiffré, un assistant IA de recherche, et offre un chiffrement de niveau bancaire. De plus, vos données sont hébergées en Europe et soumises au RGPD, contrairement à de nombreux services américains.",
+    question: "Quelle est la différence entre Koffr et un simple cloud comme Google Drive ?",
+    answer: "Contrairement à un cloud généraliste, Koffr est spécialement conçu pour organiser vos documents importants par catégories (sphères). Il intègre un gestionnaire de mots de passe chiffré, un assistant IA de recherche, et offre un chiffrement de niveau bancaire. De plus, vos données sont hébergées en Europe et soumises au RGPD, contrairement à de nombreux services américains.",
   },
   {
-    question: "Comment annuler mon abonnement DocuSphere ?",
+    question: "Comment annuler mon abonnement Koffr ?",
     answer: "Vous pouvez annuler votre abonnement à tout moment depuis les paramètres de votre compte, sans engagement ni frais d'annulation. Si vous passez d'un plan payant au plan gratuit, vous conservez l'accès à vos documents dans la limite du stockage gratuit (500 MB).",
   },
 ];
@@ -113,7 +113,7 @@ export function FAQSection() {
               Questions <span className="text-gradient">fréquentes</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
-              Tout ce que vous devez savoir sur DocuSphere.
+              Tout ce que vous devez savoir sur Koffr.
             </p>
           </div>
         </TextReveal3D>

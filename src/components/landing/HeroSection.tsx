@@ -175,7 +175,7 @@ export function HeroSection() {
                   <div className="flex-1 flex justify-center">
                     <div className="flex items-center gap-2 px-3 md:px-4 py-1 md:py-1.5 rounded-lg bg-sidebar-accent/50">
                       <Lock className="w-3 h-3 text-success" />
-                      <span className="text-[10px] md:text-xs text-sidebar-foreground/70 font-medium">docusphere.app</span>
+                      <span className="text-[10px] md:text-xs text-sidebar-foreground/70 font-medium">koffr.app</span>
                     </div>
                   </div>
                 </div>

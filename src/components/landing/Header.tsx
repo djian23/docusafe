@@ -11,11 +11,11 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
       <div className="container mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 font-bold text-lg md:text-xl group" aria-label="DocuSphere - Accueil">
+        <Link to="/" className="flex items-center gap-2 font-bold text-lg md:text-xl group" aria-label="Koffr - Accueil">
           <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center shadow-soft group-hover:scale-105 transition-transform overflow-hidden">
             <LogoIcon size={36} />
           </div>
-          <span className="text-gradient font-semibold">DocuSphere</span>
+          <span className="text-gradient font-semibold">Koffr</span>
         </Link>
         
         <nav className="hidden md:flex items-center gap-8" role="navigation" aria-label="Navigation principale">

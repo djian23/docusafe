@@ -6,7 +6,7 @@ export default function PrivacyPolicy() {
       <section>
         <h2 className="text-xl font-semibold mb-3">1. Introduction</h2>
         <p className="text-muted-foreground leading-relaxed">
-          DocuSphere (ci-après "nous", "notre" ou "la Plateforme") s'engage à protéger la vie privée de ses utilisateurs.
+          Koffr (ci-après "nous", "notre" ou "la Plateforme") s'engage à protéger la vie privée de ses utilisateurs.
           Cette politique de confidentialité décrit comment nous collectons, utilisons, stockons et protégeons vos données personnelles
           conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés.
         </p>
@@ -98,7 +98,7 @@ export default function PrivacyPolicy() {
           <li><strong className="text-foreground">Droit à la limitation :</strong> restreindre le traitement de vos données</li>
         </ul>
         <p className="text-muted-foreground leading-relaxed mt-3">
-          Pour exercer vos droits, contactez-nous à : <a href="mailto:privacy@docusphere.app" className="text-primary hover:underline">privacy@docusphere.app</a>
+          Pour exercer vos droits, contactez-nous à : <a href="mailto:privacy@koffr.app" className="text-primary hover:underline">privacy@koffr.app</a>
         </p>
       </section>
 
@@ -115,9 +115,9 @@ export default function PrivacyPolicy() {
         <h2 className="text-xl font-semibold mb-3">10. Contact</h2>
         <p className="text-muted-foreground leading-relaxed">
           Pour toute question concernant cette politique de confidentialité :<br />
-          <strong className="text-foreground">DocuSphere SAS</strong><br />
-          E-mail : <a href="mailto:privacy@docusphere.app" className="text-primary hover:underline">privacy@docusphere.app</a><br />
-          Délégué à la protection des données (DPO) : <a href="mailto:dpo@docusphere.app" className="text-primary hover:underline">dpo@docusphere.app</a><br />
+          <strong className="text-foreground">Koffr SAS</strong><br />
+          E-mail : <a href="mailto:privacy@koffr.app" className="text-primary hover:underline">privacy@koffr.app</a><br />
+          Délégué à la protection des données (DPO) : <a href="mailto:dpo@koffr.app" className="text-primary hover:underline">dpo@koffr.app</a><br />
           Vous pouvez également adresser une réclamation à la <strong className="text-foreground">CNIL</strong> (Commission Nationale de l'Informatique et des Libertés).
         </p>
       </section>

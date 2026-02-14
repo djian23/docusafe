@@ -6,15 +6,15 @@ export default function TermsOfService() {
       <section>
         <h2 className="text-xl font-semibold mb-3">1. Objet</h2>
         <p className="text-muted-foreground leading-relaxed">
-          Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de la plateforme DocuSphere,
-          un service de coffre-fort numérique intelligent édité par DocuSphere SAS. En créant un compte, vous acceptez sans réserve
+          Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de la plateforme Koffr,
+          un service de coffre-fort numérique intelligent édité par Koffr SAS. En créant un compte, vous acceptez sans réserve
           l'intégralité des présentes conditions.
         </p>
       </section>
 
       <section>
         <h2 className="text-xl font-semibold mb-3">2. Description du service</h2>
-        <p className="text-muted-foreground leading-relaxed mb-3">DocuSphere propose les services suivants :</p>
+        <p className="text-muted-foreground leading-relaxed mb-3">Koffr propose les services suivants :</p>
         <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
           <li>Stockage sécurisé de documents avec chiffrement AES-256</li>
           <li>Gestionnaire de mots de passe chiffré de bout en bout</li>
@@ -78,7 +78,7 @@ export default function TermsOfService() {
           <li>Ne pas stocker de contenus illicites (contrefaçons, contenus pédopornographiques, etc.)</li>
           <li>Ne pas tenter de contourner les mesures de sécurité</li>
           <li>Ne pas partager ses identifiants avec des tiers</li>
-          <li>Respecter les droits de propriété intellectuelle de DocuSphere et des tiers</li>
+          <li>Respecter les droits de propriété intellectuelle de Koffr et des tiers</li>
           <li>Signaler toute faille de sécurité découverte</li>
         </ul>
       </section>
@@ -86,7 +86,7 @@ export default function TermsOfService() {
       <section>
         <h2 className="text-xl font-semibold mb-3">6. Propriété intellectuelle</h2>
         <p className="text-muted-foreground leading-relaxed">
-          La plateforme DocuSphere, son interface, son code source, ses algorithmes et son contenu éditorial
+          La plateforme Koffr, son interface, son code source, ses algorithmes et son contenu éditorial
           sont protégés par le droit de la propriété intellectuelle. Toute reproduction, même partielle,
           est interdite sans autorisation préalable. Les documents stockés par l'utilisateur restent sa propriété exclusive.
         </p>
@@ -95,8 +95,8 @@ export default function TermsOfService() {
       <section>
         <h2 className="text-xl font-semibold mb-3">7. Disponibilité du service</h2>
         <p className="text-muted-foreground leading-relaxed">
-          DocuSphere s'efforce d'assurer une disponibilité de 99,9% du service. Des interruptions planifiées
-          pour maintenance seront communiquées 48h à l'avance. DocuSphere ne saurait être tenu responsable
+          Koffr s'efforce d'assurer une disponibilité de 99,9% du service. Des interruptions planifiées
+          pour maintenance seront communiquées 48h à l'avance. Koffr ne saurait être tenu responsable
           des interruptions dues à des cas de force majeure, des pannes de réseau ou des attaques informatiques.
         </p>
       </section>
@@ -107,7 +107,7 @@ export default function TermsOfService() {
           <li>L'utilisateur peut supprimer son compte à tout moment depuis les paramètres</li>
           <li>Les données seront définitivement supprimées 30 jours après la demande</li>
           <li>L'export des données est possible avant la suppression (droit à la portabilité)</li>
-          <li>DocuSphere peut suspendre un compte en cas de violation des CGU</li>
+          <li>Koffr peut suspendre un compte en cas de violation des CGU</li>
           <li>Les abonnements en cours seront remboursés au prorata</li>
         </ul>
       </section>
@@ -115,9 +115,9 @@ export default function TermsOfService() {
       <section>
         <h2 className="text-xl font-semibold mb-3">9. Limitation de responsabilité</h2>
         <p className="text-muted-foreground leading-relaxed">
-          DocuSphere ne saurait être tenu responsable des dommages indirects résultant de l'utilisation du service.
-          La responsabilité totale de DocuSphere est limitée au montant des sommes versées par l'utilisateur
-          au cours des 12 derniers mois. DocuSphere ne peut garantir la récupération des données
+          Koffr ne saurait être tenu responsable des dommages indirects résultant de l'utilisation du service.
+          La responsabilité totale de Koffr est limitée au montant des sommes versées par l'utilisateur
+          au cours des 12 derniers mois. Koffr ne peut garantir la récupération des données
           en cas de perte du mot de passe maître (architecture zero-knowledge).
         </p>
       </section>
@@ -135,8 +135,8 @@ export default function TermsOfService() {
         <h2 className="text-xl font-semibold mb-3">11. Contact</h2>
         <p className="text-muted-foreground leading-relaxed">
           Pour toute question relative aux présentes conditions :<br />
-          <strong className="text-foreground">DocuSphere SAS</strong><br />
-          E-mail : <a href="mailto:contact@docusphere.app" className="text-primary hover:underline">contact@docusphere.app</a>
+          <strong className="text-foreground">Koffr SAS</strong><br />
+          E-mail : <a href="mailto:contact@koffr.app" className="text-primary hover:underline">contact@koffr.app</a>
         </p>
       </section>
     </LegalPageLayout>

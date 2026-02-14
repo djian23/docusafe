@@ -79,7 +79,7 @@ export function FeaturesSection() {
               <span className="text-gradient">en un seul endroit</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
-              DocuSphere combine gestion documentaire, sécurité avancée et intelligence artificielle.
+              Koffr combine gestion documentaire, sécurité avancée et intelligence artificielle.
             </p>
           </div>
         </TextReveal3D>

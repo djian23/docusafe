@@ -45,7 +45,7 @@ export default function HelpCenter() {
       icon: Upload,
       title: "Documents",
       faqs: [
-        { question: "Quels formats de fichiers sont acceptés ?", answer: "DocuSphere accepte tous les formats courants : PDF, images (JPG, PNG, HEIC), documents Office (DOCX, XLSX), et bien d'autres. La taille maximale par fichier est de 50 Mo pour le plan gratuit et 500 Mo pour Premium." },
+        { question: "Quels formats de fichiers sont acceptés ?", answer: "Koffr accepte tous les formats courants : PDF, images (JPG, PNG, HEIC), documents Office (DOCX, XLSX), et bien d'autres. La taille maximale par fichier est de 50 Mo pour le plan gratuit et 500 Mo pour Premium." },
         { question: "Comment fonctionne la classification IA ?", answer: "Notre IA analyse le contenu de vos documents pour les classer automatiquement dans la bonne Sphère (santé, logement, finances, etc.). Vous pouvez toujours modifier la classification manuellement." },
         { question: "Puis-je partager un document ?", answer: "Oui, depuis la fiche d'un document, cliquez sur 'Partager' pour générer un lien sécurisé avec une date d'expiration. Vous pouvez définir des permissions (lecture seule, téléchargement) et révoquer l'accès à tout moment." },
       ],
@@ -55,7 +55,7 @@ export default function HelpCenter() {
       title: "Mots de passe",
       faqs: [
         { question: "Comment fonctionne le gestionnaire de mots de passe ?", answer: "Le gestionnaire stocke vos identifiants de manière chiffrée de bout en bout. Vous pouvez y accéder depuis l'onglet 'Mots de passe' du dashboard. Un générateur de mots de passe forts est intégré." },
-        { question: "Mes mots de passe sont-ils synchronisés ?", answer: "Oui, vos mots de passe sont synchronisés de manière sécurisée sur tous vos appareils connectés à votre compte DocuSphere." },
+        { question: "Mes mots de passe sont-ils synchronisés ?", answer: "Oui, vos mots de passe sont synchronisés de manière sécurisée sur tous vos appareils connectés à votre compte Koffr." },
         { question: "Puis-je importer mes mots de passe depuis un autre gestionnaire ?", answer: "Oui, nous supportons l'import depuis les formats CSV standard, ainsi que les exports de LastPass, 1Password, Bitwarden et Dashlane. Rendez-vous dans Paramètres > Import de données." },
       ],
     },
@@ -64,7 +64,7 @@ export default function HelpCenter() {
       title: "Recherche et IA",
       faqs: [
         { question: "Comment fonctionne l'assistant IA ?", answer: "L'assistant IA peut répondre à vos questions sur vos documents. Par exemple : 'Quand expire mon assurance ?' ou 'Quel est le montant de mon dernier loyer ?'. Il analyse vos documents localement sans envoyer vos données à des tiers." },
-        { question: "La recherche fonctionne-t-elle dans le contenu des PDF ?", answer: "Oui, DocuSphere effectue une reconnaissance optique de caractères (OCR) sur vos documents scannés et PDFs pour permettre la recherche plein texte dans leur contenu." },
+        { question: "La recherche fonctionne-t-elle dans le contenu des PDF ?", answer: "Oui, Koffr effectue une reconnaissance optique de caractères (OCR) sur vos documents scannés et PDFs pour permettre la recherche plein texte dans leur contenu." },
       ],
     },
     {
@@ -91,7 +91,7 @@ export default function HelpCenter() {
       <section>
         <p className="text-muted-foreground leading-relaxed mb-8">
           Retrouvez ici les réponses aux questions les plus fréquentes. Si vous ne trouvez pas la réponse à votre question,
-          contactez-nous à <a href="mailto:support@docusphere.app" className="text-primary hover:underline">support@docusphere.app</a>.
+          contactez-nous à <a href="mailto:support@koffr.app" className="text-primary hover:underline">support@koffr.app</a>.
         </p>
 
         <div className="space-y-8">
@@ -119,7 +119,7 @@ export default function HelpCenter() {
           <div className="p-4 rounded-xl bg-card border border-border">
             <h3 className="font-semibold mb-2">Support par e-mail</h3>
             <p className="text-sm text-muted-foreground mb-2">Réponse sous 24h en jours ouvrés.</p>
-            <a href="mailto:support@docusphere.app" className="text-sm text-primary hover:underline">support@docusphere.app</a>
+            <a href="mailto:support@koffr.app" className="text-sm text-primary hover:underline">support@koffr.app</a>
           </div>
           <div className="p-4 rounded-xl bg-card border border-border">
             <h3 className="font-semibold mb-2">Support prioritaire</h3>

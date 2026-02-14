@@ -113,7 +113,7 @@ export default function StatusPage() {
         <h2 className="text-xl font-semibold mb-3">Notifications</h2>
         <p className="text-muted-foreground leading-relaxed">
           Pour être informé en temps réel des incidents et maintenances, suivez-nous sur nos canaux de communication
-          ou contactez <a href="mailto:support@docusphere.app" className="text-primary hover:underline">support@docusphere.app</a> pour
+          ou contactez <a href="mailto:support@koffr.app" className="text-primary hover:underline">support@koffr.app</a> pour
           vous inscrire aux alertes par e-mail.
         </p>
       </section>
