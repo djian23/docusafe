@@ -32,22 +32,19 @@ export function WordByWordReveal({ text, className = '', delay = 0 }: { text: st
   const words = text.split(' ');
 
   return (
-    <span className={className} style={{ perspective: 800 }}>
+    <span className={className}>
       {words.map((word, i) => (
         <motion.span
           key={i}
           className="inline-block mr-[0.3em]"
-          initial={{ opacity: 0, rotateY: 90, y: 20 }}
-          whileInView={{ opacity: 1, rotateY: 0, y: 0 }}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{
-            duration: 0.5,
-            delay: delay + i * 0.08,
-            type: 'spring',
-            stiffness: 150,
-            damping: 12,
+            duration: 0.4,
+            delay: delay + i * 0.12,
+            ease: 'easeOut',
           }}
-          style={{ transformStyle: 'preserve-3d' }}
         >
           {word}
         </motion.span>
@@ -57,27 +54,30 @@ export function WordByWordReveal({ text, className = '', delay = 0 }: { text: st
 }
 
 export function CharacterReveal({ text, className = '', delay = 0 }: { text: string; className?: string; delay?: number }) {
-  const chars = text.split('');
+  const words = text.split(' ');
 
   return (
-    <span className={className} style={{ perspective: 1000 }}>
-      {chars.map((char, i) => (
-        <motion.span
-          key={i}
-          className="inline-block"
-          initial={{ opacity: 0, scale: 0, rotateZ: -180 }}
-          whileInView={{ opacity: 1, scale: 1, rotateZ: 0 }}
-          viewport={{ once: true }}
-          transition={{
-            duration: 0.4,
-            delay: delay + i * 0.03,
-            type: 'spring',
-            stiffness: 200,
-            damping: 15,
-          }}
-        >
-          {char === ' ' ? '\u00A0' : char}
-        </motion.span>
+    <span className={className}>
+      {words.map((word, wi) => (
+        <span key={wi} className="inline-block whitespace-nowrap">
+          {word.split('').map((char, ci) => (
+            <motion.span
+              key={ci}
+              className="inline-block"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.3,
+                delay: delay + (wi * word.length + ci) * 0.025,
+                ease: 'easeOut',
+              }}
+            >
+              {char}
+            </motion.span>
+          ))}
+          {wi < words.length - 1 && <span>{'\u00A0'}</span>}
+        </span>
       ))}
     </span>
   );

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, Sparkles, Lock, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Suspense, lazy } from "react";
-import { TextReveal3D, CharacterReveal } from "@/components/animations/TextReveal3D";
+import { TextReveal3D } from "@/components/animations/TextReveal3D";
 import { Parallax3D } from "@/components/animations/Parallax3D";
 import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
 
@@ -49,9 +49,7 @@ export function HeroSection() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight">
             Votre coffre-fort
             <br />
-            <span className="text-gradient">
-              <CharacterReveal text="numérique intelligent" delay={0.3} />
-            </span>
+            <span className="text-gradient">numérique intelligent</span>
           </h1>
         </TextReveal3D>
 
