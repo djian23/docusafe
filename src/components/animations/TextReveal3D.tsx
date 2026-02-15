@@ -32,22 +32,19 @@ export function WordByWordReveal({ text, className = '', delay = 0 }: { text: st
   const words = text.split(' ');
 
   return (
-    <span className={className} style={{ perspective: 800 }}>
+    <span className={className}>
       {words.map((word, i) => (
         <motion.span
           key={i}
           className="inline-block mr-[0.3em]"
-          initial={{ opacity: 0, rotateY: 90, y: 20 }}
-          whileInView={{ opacity: 1, rotateY: 0, y: 0 }}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{
-            duration: 0.5,
-            delay: delay + i * 0.08,
-            type: 'spring',
-            stiffness: 150,
-            damping: 12,
+            duration: 0.4,
+            delay: delay + i * 0.12,
+            ease: 'easeOut',
           }}
-          style={{ transformStyle: 'preserve-3d' }}
         >
           {word}
         </motion.span>
