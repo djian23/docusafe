@@ -4,7 +4,7 @@ import { Float, RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 
 function Document3D({ position, color, rotation, speed, index }: { position: [number, number, number]; color: string; rotation: number; speed: number; index: number }) {
-  const meshRef = useRef<THREE.Mesh>(null!);
+  const meshRef = useRef<THREE.Group>(null!);
   const foldRef = useRef<THREE.Mesh>(null!);
 
   useFrame(({ clock }) => {
