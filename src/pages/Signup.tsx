@@ -10,7 +10,6 @@ import { Shield, Mail, Lock, ArrowRight, Check } from "lucide-react";
 import { LogoIcon } from "@/components/ui/LogoIcon";
 import { translateSupabaseError } from "@/lib/supabase-errors";
 import { PageTransition } from "@/components/animations/PageTransition";
-import { PageTransition } from "@/components/animations/PageTransition";
 import { FloatingElements } from "@/components/animations/FloatingElements";
 import { SlideIn } from "@/components/animations/SlideIn";
 import { motion } from "framer-motion";
