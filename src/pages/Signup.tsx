@@ -63,15 +63,6 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const isConnected = await checkSupabaseConnection();
-      if (!isConnected) {
-        toast({
-          title: "Erreur de connexion",
-          description: "Impossible de joindre le serveur. Vérifiez votre connexion internet.",
-          variant: "destructive",
-        });
-        return;
-      }
 
       const { error } = await supabase.auth.signUp({
         email,
